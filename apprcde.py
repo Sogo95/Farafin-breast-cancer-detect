@@ -348,8 +348,7 @@ def login_page():
     st.markdown("""
     <div style="text-align:center; margin-bottom: 2.5rem;">
     <img src='https://img.icons8.com/color/240/pink-ribbon.png' width='160'>
-    </div>   
-            
+    </div>            
           
     <h1 style="font-family:'Playfair Display',serif; font-size:1.75rem; font-weight:700; color:white; margin:0 0 8px;">
         Farafin BreastCancer AI Detect
