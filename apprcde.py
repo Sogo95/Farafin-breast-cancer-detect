@@ -362,10 +362,10 @@ def login_page():
             </svg>
         </div>
         <h1 style="font-family:'Playfair Display',serif; font-size:1.75rem; font-weight:700; color:white; margin:0 0 8px;">
-            Farafin BreastCancer AI
+            Farafin BreastCancer AI Detect
         </h1>
         <p style="color:#94b3c8; font-size:0.9rem; margin:0; font-weight:300; letter-spacing:0.05em;">
-            CLINICAL DECISION SUPPORT PLATFORM
+            Système d'aide au diagnostic du cancer du Sein
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -417,7 +417,6 @@ if not st.session_state.authenticated:
 # UTILISATEUR CONNECTÉ
 # ======================================================
 current_user = AUTHORIZED_USERS[st.session_state.username]
-
 
 # ======================================================
 # MODÈLE IA
@@ -523,9 +522,8 @@ with col_title:
         <p style="font-size:0.75rem; color:#ec4899; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:4px;">
             Plateforme clinique IA
         </p>
-        <h1 style="margin:0;">Analyse Mammographique Assistée</h1>
+        <h1 style="margin:0;">Bienvenue sur la plateforme d'aide au diagnostic du cancer du sein Assistée par IA </h1>
         <p style="color:#64748b; font-size:0.93rem; margin-top:6px; font-weight:300;">
-            Détection précoce des lésions mammaires par intelligence artificielle
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -564,8 +562,8 @@ st.markdown("""
             Avis de support décisionnel
         </span>
         <span style="font-size:0.82rem; color:#3b82f6; font-weight:300;">
-            Cet outil assiste le radiologue dans l'interprétation des mammographies.
-            La validation clinique finale reste <strong>strictement médicale</strong>.
+            Cet outil a pour rôle d'assister le radiologue dans l'interprétation des mammographies.
+           <strong>La validation clinique finale reste strictement médicale</strong>.
         </span>
     </div>
 </div>
@@ -597,7 +595,7 @@ with main_col:
                 font-size:1rem;
             ">📤</div>
             <div>
-                <h3 style="margin:0; text-transform:none; letter-spacing:0;">Importation de l'image</h3>
+                <h3 style="margin:0; text-transform:none; letter-spacing:0;">Importation d'une image</h3>
                 <p style="margin:0; font-size:0.78rem; color:#94a3b8; font-weight:300;">Format DICOM, JPG, PNG, JPEG acceptés</p>
             </div>
         </div>
@@ -681,7 +679,7 @@ with side_col:
         st.markdown("</div>", unsafe_allow_html=True)
 
         # BOUTON ANALYSE
-        launch = st.button("🔬  Lancer l'analyse clinique IA")
+        launch = st.button("🔬  Lancer l'analyse assistée par IA")
 
     else:
         # État vide
@@ -849,9 +847,9 @@ if uploaded_file is not None and launch:
         margin-top:1rem;
     ">
         <p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.6;">
-            <strong style="color:#64748b;">⚖️ Avertissement clinique</strong> —
+            <strong style="color:#64748b;"> Avertissement clinique!!!!</strong> —
             Cette analyse constitue un support décisionnel automatisé et ne doit jamais se substituer
-            au jugement clinique du radiologue ou de l'oncologue.
+            au jugement clinique du radiologue.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -867,7 +865,7 @@ st.markdown("""
     padding:0.5rem 0; flex-wrap:wrap; gap:0.5rem;
 ">
     <span style="font-size:0.78rem; color:#94a3b8;">
-        Farafin AI for Health &nbsp;·&nbsp; Plateforme clinique v2.0 &nbsp;·&nbsp; 2026
+        Farafin AI for Health &nbsp;·&nbsp; Plateforme d'aide au diagnostic clinique v2.0 &nbsp;·&nbsp; 2026
     </span>
     <span style="font-size:0.78rem; color:#cbd5e1;">
         Modèle : MobileNetV2 &nbsp;·&nbsp; Confidentiel — Usage médical exclusif
