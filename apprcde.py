@@ -359,47 +359,31 @@ def login_page():
     
     """, unsafe_allow_html=True)
     
- # CARTE LOGIN
-st.markdown("""
-<div style="
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 20px;
-    padding: 2rem 2rem 1.5rem;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 24px 64px rgba(0,0,0,0.3);
-">
-""", unsafe_allow_html=True)
+    # CARTE LOGIN
+    st.markdown("""
+    <div style="
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px;
+        padding: 2rem 2rem 1.5rem;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+    ">
+    """, unsafe_allow_html=True)
 
-# 🔥 REMEMBER INPUTS
-default_user = st.session_state.get("username", "")
+    username = st.text_input("Identifiant", placeholder="votre.identifiant")
+    password = st.text_input("Mot de passe", type="password", placeholder="••••••••••••")
 
-username = st.text_input(
-    "Identifiant",
-    value=default_user,
-    placeholder="votre.identifiant"
-)
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
-password = st.text_input(
-    "Mot de passe",
-    type="password",
-    placeholder="••••••••••••"
-)
-
-st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
-
-# LOGIN LOGIC
-if st.button("Accéder à la plateforme →"):
-    if username in AUTHORIZED_USERS and AUTHORIZED_USERS[username]["password"] == password:
-
-        st.session_state.authenticated = True
-        st.session_state.username = username
-
-        st.success("Accès autorisé — Chargement en cours…")
-        st.rerun()
-
-    else:
-        st.error("Identifiants incorrects ou accès non autorisé.")
+    if st.button("Accéder à la plateforme →"):
+        if username in AUTHORIZED_USERS and AUTHORIZED_USERS[username]["password"] == password:
+            st.session_state.authenticated = True
+            st.session_state.username = username
+            st.success("Accès autorisé — Chargement en cours…")
+            st.rerun()
+        else:
+            st.error("Identifiants incorrects ou accès non autorisé.")
 
     st.markdown("</div>", unsafe_allow_html=True)
 
