@@ -28,12 +28,12 @@ st.set_page_config(
 # ══════════════════════════════════════════════════════════════════════════════
 #  GLOBAL CSS  —  Harvard Medical School caliber design
 #  Palette : Deep Navy #0B1929 · Ivory #F7F5F0 · Rose Accent #C8385A
-#  Fonts   : Cormorant Garamond (display) + IBM Plex Sans (body)
+#  Fonts   : Inter (all)
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
 <style>
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* ─── RESET ─── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; }
@@ -65,7 +65,7 @@ st.markdown("""
 }
 
 html, body, [class*="css"] {
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     color: var(--navy);
     -webkit-font-smoothing: antialiased;
 }
@@ -100,7 +100,7 @@ html, body, [class*="css"] {
 }
 
 [data-testid="stSidebar"] * {
-    font-family: 'IBM Plex Sans', sans-serif !important;
+    font-family: 'Inter', sans-serif !important;
     color: #B8CCDC !important;
 }
 
@@ -129,28 +129,28 @@ html, body, [class*="css"] {
 
 /* ─── TYPOGRAPHY ─── */
 h1 {
-    font-family: 'Cormorant Garamond', Georgia, serif !important;
-    font-size: 2.4rem !important;
-    font-weight: 600 !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 1.9rem !important;
+    font-weight: 700 !important;
     color: var(--navy) !important;
-    letter-spacing: -0.01em !important;
-    line-height: 1.15 !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.2 !important;
 }
 
 h2 {
-    font-family: 'Cormorant Garamond', serif !important;
-    font-size: 1.55rem !important;
-    font-weight: 500 !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 1.3rem !important;
+    font-weight: 600 !important;
     color: var(--navy-mid) !important;
 }
 
 h3 {
-    font-family: 'IBM Plex Sans', sans-serif !important;
+    font-family: 'Inter', sans-serif !important;
     font-size: 0.7rem !important;
     font-weight: 600 !important;
     color: var(--slate) !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.14em !important;
+    letter-spacing: 0.12em !important;
 }
 
 /* ─── INPUTS (main app) ─── */
@@ -158,7 +158,7 @@ h3 {
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     padding: 0.65rem 1rem;
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
     background: #FFFFFF;
     color: var(--navy);
@@ -187,8 +187,8 @@ h3 {
     border-radius: var(--radius-sm);
     font-size: 0.85rem;
     font-weight: 600;
-    font-family: 'IBM Plex Sans', sans-serif;
-    letter-spacing: 0.08em;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     border: none;
     background: linear-gradient(135deg, var(--rose) 0%, var(--rose-dark) 100%);
@@ -345,52 +345,34 @@ def login_page():
 
     # ── TOP INSTITUTIONAL HEADER ──
     st.markdown(f"""
-    <div style="text-align:center; padding: 1rem 0 2.5rem;">
+    <div style="text-align:center; padding: 1rem 0 2.2rem;">
 
-        <!-- Logo ribbon -->
-        <div style="margin-bottom: 1.6rem;">
-            <img src='https://img.icons8.com/color/240/pink-ribbon.png'
-                 width='100'
-                 style="filter: drop-shadow(0 0 28px rgba(200,56,90,0.55)); display:block; margin:0 auto;">
-        </div>
+        <img src='https://img.icons8.com/color/240/pink-ribbon.png'
+             width='110'
+             style="display:block; margin:0 auto 1.4rem;">
 
-        <!-- Institution tag -->
-        <div style="
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(200,56,90,0.12);
-            border: 1px solid rgba(200,56,90,0.28);
-            border-radius: 40px; padding: 5px 14px;
-            margin-bottom: 1.2rem;
-        ">
-            <span style="width:6px; height:6px; background:#C8385A; border-radius:50%; display:inline-block;"></span>
-            <span style="font-size:0.7rem; color:#E8A0B0; letter-spacing:0.14em; font-weight:600; text-transform:uppercase; font-family:'IBM Plex Sans',sans-serif;">
-                Restricted Clinical Access
-            </span>
-        </div>
-
-        <!-- Title -->
         <h1 style="
-            font-family:'Cormorant Garamond',Georgia,serif;
-            font-size: 2rem; font-weight: 600;
-            color: #FFFFFF; letter-spacing: -0.01em;
-            line-height: 1.2; margin: 0 0 0.5rem;
+            font-family:'Inter',-apple-system,sans-serif;
+            font-size: 1.65rem; font-weight: 700;
+            color: #FFFFFF; letter-spacing: -0.02em;
+            line-height: 1.25; margin: 0 0 6px;
         ">
             Farafin BreastCancer AI
         </h1>
         <p style="
-            font-family:'IBM Plex Sans',sans-serif;
-            font-size: 0.78rem; color: rgba(255,255,255,0.38);
-            letter-spacing: 0.16em; text-transform: uppercase;
-            margin: 0 0 0.25rem;
+            font-family:'Inter',sans-serif;
+            font-size: 0.73rem; color: rgba(255,255,255,0.35);
+            letter-spacing: 0.14em; text-transform: uppercase;
+            margin: 0 0 4px;
         ">
             Clinical Decision Support Platform
         </p>
         <p style="
-            font-family:'IBM Plex Mono',monospace;
-            font-size: 0.72rem; color: rgba(255,255,255,0.2);
+            font-family:'Inter',monospace;
+            font-size: 0.7rem; color: rgba(255,255,255,0.18);
             margin: 0;
         ">
-            {now.strftime("%A, %d %B %Y")} &nbsp;·&nbsp; {now.strftime("%H:%M")} UTC
+            {now.strftime("%d %B %Y")} &nbsp;·&nbsp; {now.strftime("%H:%M")}
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -398,23 +380,20 @@ def login_page():
     # ── LOGIN CARD ──
     st.markdown("""
     <div style="
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.09);
-        border-top: 1px solid rgba(255,255,255,0.16);
-        border-radius: 18px;
-        padding: 2rem 2rem 1.6rem;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        box-shadow: 0 32px 80px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
-        margin-bottom: 1.2rem;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 14px;
+        padding: 1.8rem 1.8rem 1.4rem;
+        box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+        margin-bottom: 1rem;
     ">
         <p style="
-            font-family:'IBM Plex Sans',sans-serif;
-            font-size:0.68rem; font-weight:600;
-            color:rgba(255,255,255,0.25);
+            font-family:'Inter',sans-serif;
+            font-size:0.65rem; font-weight:600;
+            color:rgba(255,255,255,0.22);
             letter-spacing:0.14em; text-transform:uppercase;
-            margin-bottom:1.4rem; border-bottom:1px solid rgba(255,255,255,0.07);
-            padding-bottom:0.8rem;
+            margin-bottom:1.2rem; border-bottom:1px solid rgba(255,255,255,0.07);
+            padding-bottom:0.75rem;
         ">
             Authentification sécurisée
         </p>
@@ -439,7 +418,7 @@ def login_page():
     # ── FOOTER NOTE ──
     st.markdown("""
     <div style="text-align:center; padding-top:1.2rem;">
-        <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.72rem;
+        <p style="font-family:'Inter',sans-serif; font-size:0.72rem;
                   color:rgba(255,255,255,0.18); letter-spacing:0.06em; line-height:1.8;">
             Accès réservé aux professionnels de santé habilités<br>
             <span style="color:rgba(255,255,255,0.1);">
@@ -486,7 +465,7 @@ with st.sidebar:
                 width:44px; height:44px; border-radius:12px; flex-shrink:0;
                 background: linear-gradient(135deg, #C8385A, #8B1A34);
                 display:flex; align-items:center; justify-content:center;
-                font-family:'IBM Plex Sans',sans-serif;
+                font-family:'Inter',sans-serif;
                 font-weight:600; font-size:0.88rem; color:white;
                 box-shadow: 0 4px 14px rgba(200,56,90,0.4);
             ">
@@ -494,11 +473,11 @@ with st.sidebar:
             </div>
             <div>
                 <p style="color:#FFFFFF !important; font-weight:600; font-size:0.88rem;
-                           line-height:1.2; margin:0 0 2px; font-family:'IBM Plex Sans',sans-serif;">
+                           line-height:1.2; margin:0 0 2px; font-family:'Inter',sans-serif;">
                     {current_user['full_name']}
                 </p>
                 <p style="color:#5A7A9A !important; font-size:0.72rem; margin:0;
-                           font-family:'IBM Plex Mono',monospace; letter-spacing:0.02em;">
+                           font-family:'Inter',sans-serif; letter-spacing:0.02em;">
                     {current_user.get('grade','MD')}
                 </p>
             </div>
@@ -513,14 +492,14 @@ with st.sidebar:
             <span style="width:5px; height:5px; background:#C8385A;
                           border-radius:50%; flex-shrink:0; display:inline-block;"></span>
             <span style="font-size:0.72rem; color:#D4708A !important;
-                          font-family:'IBM Plex Sans',sans-serif; letter-spacing:0.04em;">
+                          font-family:'Inter',sans-serif; letter-spacing:0.04em;">
                 {current_user['role']}
             </span>
         </div>
 
         <!-- Department -->
         <p style="font-size:0.72rem; color:#3A5570 !important; margin:8px 0 0;
-                   font-family:'IBM Plex Sans',sans-serif; padding-left:2px;">
+                   font-family:'Inter',sans-serif; padding-left:2px;">
             🏥 {current_user['department']}
         </p>
     </div>
@@ -532,7 +511,7 @@ with st.sidebar:
     st.markdown("""
     <p style="font-size:0.65rem; color:#2A4560 !important; font-weight:600;
                text-transform:uppercase; letter-spacing:0.14em;
-               font-family:'IBM Plex Sans',sans-serif; margin-bottom:0.7rem;">
+               font-family:'Inter',sans-serif; margin-bottom:0.7rem;">
         Modules cliniques
     </p>
     """, unsafe_allow_html=True)
@@ -561,7 +540,7 @@ with st.sidebar:
                      padding:9px 11px; margin-bottom:3px; cursor:pointer;">
             <span style="font-size:0.95rem;">{icon}</span>
             <span style="font-size:0.83rem; color:{txt_color}; font-weight:{fw};
-                          font-family:'IBM Plex Sans',sans-serif;">{label}</span>
+                          font-family:'Inter',sans-serif;">{label}</span>
         </div>
         """, unsafe_allow_html=True)
 
@@ -573,25 +552,25 @@ with st.sidebar:
     <div style="margin-bottom:1rem;">
         <p style="font-size:0.65rem; color:#2A4560 !important; font-weight:600;
                    text-transform:uppercase; letter-spacing:0.14em;
-                   font-family:'IBM Plex Sans',sans-serif; margin-bottom:0.6rem;">
+                   font-family:'Inter',sans-serif; margin-bottom:0.6rem;">
             Session
         </p>
         <div style="display:flex; flex-direction:column; gap:4px;">
             <div style="display:flex; justify-content:space-between;">
-                <span style="font-size:0.73rem; color:#2A4560 !important; font-family:'IBM Plex Sans',sans-serif;">Date</span>
-                <span style="font-size:0.73rem; color:#5A7A9A !important; font-family:'IBM Plex Mono',monospace;">{now.strftime('%d %b %Y')}</span>
+                <span style="font-size:0.73rem; color:#2A4560 !important; font-family:'Inter',sans-serif;">Date</span>
+                <span style="font-size:0.73rem; color:#5A7A9A !important; font-family:'Inter',sans-serif;">{now.strftime('%d %b %Y')}</span>
             </div>
             <div style="display:flex; justify-content:space-between;">
-                <span style="font-size:0.73rem; color:#2A4560 !important; font-family:'IBM Plex Sans',sans-serif;">Heure</span>
-                <span style="font-size:0.73rem; color:#5A7A9A !important; font-family:'IBM Plex Mono',monospace;">{now.strftime('%H:%M')}</span>
+                <span style="font-size:0.73rem; color:#2A4560 !important; font-family:'Inter',sans-serif;">Heure</span>
+                <span style="font-size:0.73rem; color:#5A7A9A !important; font-family:'Inter',sans-serif;">{now.strftime('%H:%M')}</span>
             </div>
             <div style="display:flex; justify-content:space-between;">
-                <span style="font-size:0.73rem; color:#2A4560 !important; font-family:'IBM Plex Sans',sans-serif;">Modèle</span>
-                <span style="font-size:0.73rem; color:#5A7A9A !important; font-family:'IBM Plex Mono',monospace;">MobileNetV2</span>
+                <span style="font-size:0.73rem; color:#2A4560 !important; font-family:'Inter',sans-serif;">Modèle</span>
+                <span style="font-size:0.73rem; color:#5A7A9A !important; font-family:'Inter',sans-serif;">MobileNetV2</span>
             </div>
             <div style="display:flex; justify-content:space-between; margin-top:2px;">
-                <span style="font-size:0.73rem; color:#2A4560 !important; font-family:'IBM Plex Sans',sans-serif;">Statut</span>
-                <span style="font-size:0.73rem; font-family:'IBM Plex Sans',sans-serif;">
+                <span style="font-size:0.73rem; color:#2A4560 !important; font-family:'Inter',sans-serif;">Statut</span>
+                <span style="font-size:0.73rem; font-family:'Inter',sans-serif;">
                     <span style="width:5px; height:5px; background:#1A7F5A; border-radius:50%;
                                   display:inline-block; margin-right:4px;"></span>
                     <span style="color:#1A7F5A !important; font-weight:500;">Actif</span>
@@ -610,7 +589,7 @@ with st.sidebar:
     st.markdown("""
     <div style="margin-top:1.5rem; padding-top:1rem;
                 border-top:1px solid rgba(255,255,255,0.05);">
-        <p style="font-family:'IBM Plex Mono',monospace; font-size:0.65rem;
+        <p style="font-family:'Inter',sans-serif; font-size:0.65rem;
                    color:#1A3050 !important; text-align:center; line-height:1.8; margin:0;">
             FARAFIN AI FOR HEALTH<br>
             v2.0.0 — 2026
@@ -629,13 +608,13 @@ col_h, col_status = st.columns([5, 1])
 with col_h:
     st.markdown("""
     <div style="margin-bottom: 0.2rem;">
-        <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.68rem; font-weight:600;
+        <p style="font-family:'Inter',sans-serif; font-size:0.68rem; font-weight:600;
                    color:var(--rose); letter-spacing:0.16em; text-transform:uppercase;
                    margin:0 0 6px;">
             Mammographie · Analyse assistée par IA
         </p>
         <h1 style="margin:0 0 6px;">Interprétation Clinique Mammographique</h1>
-        <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.88rem;
+        <p style="font-family:'Inter',sans-serif; font-size:0.88rem;
                    color:var(--slate); font-weight:300; margin:0; line-height:1.6;">
             Détection précoce des lésions mammaires par intelligence artificielle
             &nbsp;·&nbsp; Modèle MobileNetV2 validé cliniquement
@@ -656,7 +635,7 @@ with col_status:
                           box-shadow:0 0 6px rgba(26,127,90,0.5);"></span>
             <span style="font-size:0.68rem; color:#1A7F5A; font-weight:600;
                           letter-spacing:0.1em; text-transform:uppercase;
-                          font-family:'IBM Plex Sans',sans-serif;">
+                          font-family:'Inter',sans-serif;">
                 Système actif
             </span>
         </div>
@@ -677,11 +656,11 @@ st.markdown("""
         <path d="M12 8v4M12 16h.01" stroke="#0B6FBF" stroke-width="1.5" stroke-linecap="round"/>
     </svg>
     <div>
-        <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.8rem; font-weight:600;
+        <p style="font-family:'Inter',sans-serif; font-size:0.8rem; font-weight:600;
                    color:#0B3D6F; margin:0 0 3px; letter-spacing:0.01em;">
             Avis de support décisionnel automatisé
         </p>
-        <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.79rem;
+        <p style="font-family:'Inter',sans-serif; font-size:0.79rem;
                    color:#2A5A8A; margin:0; font-weight:300; line-height:1.6;">
             Cet outil assiste le radiologue dans l'interprétation des clichés mammographiques.
             La validation clinique finale demeure sous la responsabilité exclusive du médecin.
@@ -719,9 +698,9 @@ with col_img:
                 </svg>
             </div>
             <div>
-                <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.88rem; font-weight:600;
+                <p style="font-family:'Inter',sans-serif; font-size:0.88rem; font-weight:600;
                            color:var(--navy); margin:0 0 2px;">Importation de l'image</p>
-                <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.72rem;
+                <p style="font-family:'Inter',sans-serif; font-size:0.72rem;
                            color:var(--slate-light); margin:0; font-weight:300;">
                     DICOM · JPEG · PNG · IMG acceptés
                 </p>
@@ -747,7 +726,7 @@ with col_img:
             border-radius:var(--radius-md); padding:1.2rem 1.4rem;
             box-shadow:var(--shadow-sm);
         ">
-            <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+            <p style="font-family:'Inter',sans-serif; font-size:0.67rem; font-weight:600;
                        color:var(--slate-light); text-transform:uppercase; letter-spacing:0.12em;
                        margin:0 0 0.9rem; border-bottom:1px solid var(--ivory-dark); padding-bottom:0.7rem;">
                 Aperçu · Cliché chargé
@@ -768,23 +747,23 @@ with col_img:
             <div style="flex:1; text-align:center; padding:7px 4px;
                          background:var(--ivory); border-radius:7px;">
                 <p style="font-size:0.6rem; color:var(--slate-light); text-transform:uppercase;
-                           letter-spacing:0.1em; margin:0 0 3px; font-family:'IBM Plex Sans',sans-serif;">Format</p>
+                           letter-spacing:0.1em; margin:0 0 3px; font-family:'Inter',sans-serif;">Format</p>
                 <p style="font-size:0.83rem; font-weight:600; color:var(--navy); margin:0;
-                           font-family:'IBM Plex Mono',monospace;">{fmt}</p>
+                           font-family:'Inter',sans-serif;">{fmt}</p>
             </div>
             <div style="flex:1; text-align:center; padding:7px 4px;
                          background:var(--ivory); border-radius:7px;">
                 <p style="font-size:0.6rem; color:var(--slate-light); text-transform:uppercase;
-                           letter-spacing:0.1em; margin:0 0 3px; font-family:'IBM Plex Sans',sans-serif;">Taille</p>
+                           letter-spacing:0.1em; margin:0 0 3px; font-family:'Inter',sans-serif;">Taille</p>
                 <p style="font-size:0.83rem; font-weight:600; color:var(--navy); margin:0;
-                           font-family:'IBM Plex Mono',monospace;">{size_kb} Ko</p>
+                           font-family:'Inter',sans-serif;">{size_kb} Ko</p>
             </div>
             <div style="flex:1; text-align:center; padding:7px 4px;
                          background:#EAF5F0; border-radius:7px;">
                 <p style="font-size:0.6rem; color:var(--slate-light); text-transform:uppercase;
-                           letter-spacing:0.1em; margin:0 0 3px; font-family:'IBM Plex Sans',sans-serif;">Statut</p>
+                           letter-spacing:0.1em; margin:0 0 3px; font-family:'Inter',sans-serif;">Statut</p>
                 <p style="font-size:0.83rem; font-weight:600; color:#1A7F5A; margin:0;
-                           font-family:'IBM Plex Sans',sans-serif;">✓ Valide</p>
+                           font-family:'Inter',sans-serif;">✓ Valide</p>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -803,7 +782,7 @@ with col_ctrl:
             border-radius:var(--radius-md); padding:1.3rem 1.4rem;
             box-shadow:var(--shadow-sm); margin-bottom:1rem;
         ">
-            <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+            <p style="font-family:'Inter',sans-serif; font-size:0.67rem; font-weight:600;
                        color:var(--slate-light); text-transform:uppercase; letter-spacing:0.12em;
                        margin:0 0 1rem; border-bottom:1px solid var(--ivory-dark); padding-bottom:0.7rem;">
                 Contrôle qualité · Pré-analyse
@@ -830,10 +809,10 @@ with col_ctrl:
                 <div style="display:flex; align-items:center; gap:9px;">
                     <span style="width:6px; height:6px; background:{dot_color};
                                   border-radius:50%; display:inline-block; flex-shrink:0;"></span>
-                    <span style="font-family:'IBM Plex Sans',sans-serif;
+                    <span style="font-family:'Inter',sans-serif;
                                   font-size:0.82rem; color:{label_color};">{label}</span>
                 </div>
-                <span style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+                <span style="font-family:'Inter',sans-serif; font-size:0.68rem;
                               color:{status_color}; font-weight:500;">{status_txt}</span>
             </div>
             """, unsafe_allow_html=True)
@@ -847,23 +826,23 @@ with col_ctrl:
             border-radius:var(--radius-md); padding:1.1rem 1.3rem;
             margin-bottom:1rem;
         ">
-            <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+            <p style="font-family:'Inter',sans-serif; font-size:0.67rem; font-weight:600;
                        color:var(--slate-light); text-transform:uppercase; letter-spacing:0.12em;
                        margin:0 0 0.8rem;">
                 Paramètres du modèle
             </p>
             <div style="display:flex; flex-direction:column; gap:5px;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:0.77rem; color:var(--slate); font-family:'IBM Plex Sans',sans-serif;">Architecture</span>
-                    <span style="font-size:0.77rem; font-family:'IBM Plex Mono',monospace; color:var(--navy); font-weight:500;">MobileNetV2</span>
+                    <span style="font-size:0.77rem; color:var(--slate); font-family:'Inter',sans-serif;">Architecture</span>
+                    <span style="font-size:0.77rem; font-family:'Inter',sans-serif; color:var(--navy); font-weight:500;">MobileNetV2</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:0.77rem; color:var(--slate); font-family:'IBM Plex Sans',sans-serif;">Type</span>
-                    <span style="font-size:0.77rem; font-family:'IBM Plex Mono',monospace; color:var(--navy); font-weight:500;">Classification binaire</span>
+                    <span style="font-size:0.77rem; color:var(--slate); font-family:'Inter',sans-serif;">Type</span>
+                    <span style="font-size:0.77rem; font-family:'Inter',sans-serif; color:var(--navy); font-weight:500;">Classification binaire</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:0.77rem; color:var(--slate); font-family:'IBM Plex Sans',sans-serif;">Seuil de décision</span>
-                    <span style="font-size:0.77rem; font-family:'IBM Plex Mono',monospace; color:var(--navy); font-weight:500;">0.50</span>
+                    <span style="font-size:0.77rem; color:var(--slate); font-family:'Inter',sans-serif;">Seuil de décision</span>
+                    <span style="font-size:0.77rem; font-family:'Inter',sans-serif; color:var(--navy); font-weight:500;">0.50</span>
                 </div>
             </div>
         </div>
@@ -886,7 +865,7 @@ with col_ctrl:
                 <circle cx="8.5" cy="8.5" r="1.5" stroke="#0B1929" stroke-width="1.5"/>
                 <path d="m21 15-5-5L5 21" stroke="#0B1929" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
-            <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.85rem;
+            <p style="font-family:'Inter',sans-serif; font-size:0.85rem;
                        color:var(--slate-light); font-weight:300; margin:0; line-height:1.7;">
                 Importez une image mammographique<br>pour accéder à l'analyse clinique
             </p>
@@ -903,7 +882,7 @@ if uploaded_file is not None and launch:
     st.markdown("<hr>", unsafe_allow_html=True)
 
     st.markdown("""
-    <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.68rem; font-weight:600;
+    <p style="font-family:'Inter',sans-serif; font-size:0.68rem; font-weight:600;
                color:var(--slate-light); text-transform:uppercase; letter-spacing:0.14em;
                margin:0 0 1.2rem;">
         Rapport d'analyse clinique automatisée
@@ -941,14 +920,14 @@ if uploaded_file is not None and launch:
                         </svg>
                     </div>
                     <div>
-                        <p style="font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:600;
+                        <p style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:600;
                                    color:#7A1530; margin:0 0 4px; line-height:1.2;">
                             Suspicion de lésion mammaire
                         </p>
-                        <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.77rem;
+                        <p style="font-family:'Inter',sans-serif; font-size:0.77rem;
                                    color:#A03050; margin:0; font-weight:300;">
                             Anomalie détectée · Score de confiance&nbsp;
-                            <span style="font-family:'IBM Plex Mono',monospace; font-weight:500;">{confidence}%</span>
+                            <span style="font-family:'Inter',sans-serif; font-weight:500;">{confidence}%</span>
                         </p>
                     </div>
                 </div>
@@ -958,10 +937,10 @@ if uploaded_file is not None and launch:
                     background:rgba(255,255,255,0.65); border:1px solid #F0C0CC;
                     border-radius:9px; padding:1rem 1.2rem; margin-bottom:1.2rem;
                 ">
-                    <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+                    <p style="font-family:'Inter',sans-serif; font-size:0.67rem; font-weight:600;
                                color:#A03050; text-transform:uppercase; letter-spacing:0.1em;
                                margin:0 0 0.5rem;">Interprétation clinique automatisée</p>
-                    <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.84rem;
+                    <p style="font-family:'Inter',sans-serif; font-size:0.84rem;
                                color:#7A1530; margin:0; line-height:1.7; font-weight:300;">
                         Le modèle identifie des anomalies radiologiques compatibles avec une
                         <strong style="font-weight:600;">lésion mammaire potentiellement maligne</strong>.
@@ -970,7 +949,7 @@ if uploaded_file is not None and launch:
                 </div>
 
                 <!-- Recommendations -->
-                <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+                <p style="font-family:'Inter',sans-serif; font-size:0.67rem; font-weight:600;
                            color:#A03050; text-transform:uppercase; letter-spacing:0.1em;
                            margin:0 0 0.7rem;">Conduite à tenir recommandée</p>
             """, unsafe_allow_html=True)
@@ -986,9 +965,9 @@ if uploaded_file is not None and launch:
                 st.markdown(f"""
                 <div style="display:flex; align-items:flex-start; gap:10px;
                              padding:6px 0; border-bottom:1px solid rgba(200,56,90,0.1);">
-                    <span style="font-family:'IBM Plex Mono',monospace; font-size:0.65rem;
+                    <span style="font-family:'Inter',sans-serif; font-size:0.65rem;
                                   color:#D4708A; flex-shrink:0; margin-top:2px;">{num}</span>
-                    <span style="font-family:'IBM Plex Sans',sans-serif; font-size:0.82rem;
+                    <span style="font-family:'Inter',sans-serif; font-size:0.82rem;
                                   color:#7A1530; line-height:1.5;">{r}</span>
                 </div>
                 """, unsafe_allow_html=True)
@@ -1007,12 +986,12 @@ if uploaded_file is not None and launch:
                         <circle cx="12" cy="12" r="3" stroke="#C8385A" stroke-width="1.5"/>
                         <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="#C8385A" stroke-width="1.5" stroke-linecap="round"/>
                     </svg>
-                    <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+                    <p style="font-family:'Inter',sans-serif; font-size:0.67rem; font-weight:600;
                                color:var(--slate); text-transform:uppercase; letter-spacing:0.12em; margin:0;">
                         Explicabilité IA · Grad-CAM
                     </p>
                 </div>
-                <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.81rem;
+                <p style="font-family:'Inter',sans-serif; font-size:0.81rem;
                            color:var(--slate); margin:0; font-weight:300; line-height:1.6;">
                     La carte de chaleur des régions d'intérêt diagnostique sera affichée ici
                     pour localiser précisément les zones suspectes.
@@ -1040,14 +1019,14 @@ if uploaded_file is not None and launch:
                         </svg>
                     </div>
                     <div>
-                        <p style="font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:600;
+                        <p style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:600;
                                    color:#0F4A34; margin:0 0 4px;">
                             Aucun signe radiologique suspect
                         </p>
-                        <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.77rem;
+                        <p style="font-family:'Inter',sans-serif; font-size:0.77rem;
                                    color:#1A7F5A; margin:0; font-weight:300;">
                             Résultat négatif · Score de confiance&nbsp;
-                            <span style="font-family:'IBM Plex Mono',monospace; font-weight:500;">{confidence}%</span>
+                            <span style="font-family:'Inter',sans-serif; font-weight:500;">{confidence}%</span>
                         </p>
                     </div>
                 </div>
@@ -1055,17 +1034,17 @@ if uploaded_file is not None and launch:
                     background:rgba(255,255,255,0.65); border:1px solid #B0D9C8;
                     border-radius:9px; padding:1rem 1.2rem; margin-bottom:1.2rem;
                 ">
-                    <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+                    <p style="font-family:'Inter',sans-serif; font-size:0.67rem; font-weight:600;
                                color:#1A7F5A; text-transform:uppercase; letter-spacing:0.1em; margin:0 0 0.5rem;">
                         Interprétation clinique automatisée
                     </p>
-                    <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.84rem;
+                    <p style="font-family:'Inter',sans-serif; font-size:0.84rem;
                                color:#0F4A34; margin:0; line-height:1.7; font-weight:300;">
                         Aucune anomalie mammaire significative n'a été identifiée sur ce cliché.
                         Ce résultat doit être intégré dans le contexte clinique global du patient.
                     </p>
                 </div>
-                <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+                <p style="font-family:'Inter',sans-serif; font-size:0.67rem; font-weight:600;
                            color:#1A7F5A; text-transform:uppercase; letter-spacing:0.1em; margin:0 0 0.7rem;">
                     Conduite à tenir recommandée
                 </p>
@@ -1081,9 +1060,9 @@ if uploaded_file is not None and launch:
                 st.markdown(f"""
                 <div style="display:flex; align-items:flex-start; gap:10px;
                              padding:6px 0; border-bottom:1px solid rgba(26,127,90,0.12);">
-                    <span style="font-family:'IBM Plex Mono',monospace; font-size:0.65rem;
+                    <span style="font-family:'Inter',sans-serif; font-size:0.65rem;
                                   color:#5AB090; flex-shrink:0; margin-top:2px;">{num}</span>
-                    <span style="font-family:'IBM Plex Sans',sans-serif; font-size:0.82rem;
+                    <span style="font-family:'Inter',sans-serif; font-size:0.82rem;
                                   color:#0F4A34; line-height:1.5;">{r}</span>
                 </div>
                 """, unsafe_allow_html=True)
@@ -1101,17 +1080,17 @@ if uploaded_file is not None and launch:
             border-radius:var(--radius-md); padding:1.4rem;
             box-shadow:var(--shadow-sm); margin-bottom:1rem;
         ">
-            <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+            <p style="font-family:'Inter',sans-serif; font-size:0.67rem; font-weight:600;
                        color:var(--slate-light); text-transform:uppercase; letter-spacing:0.12em;
                        margin:0 0 1rem; border-bottom:1px solid var(--ivory-dark); padding-bottom:0.7rem;">
                 Score de confiance
             </p>
             <div style="text-align:center; margin:0.5rem 0 1.2rem;">
-                <span style="font-family:'Cormorant Garamond',serif; font-size:3.2rem;
+                <span style="font-family:'Inter',sans-serif; font-size:3.2rem;
                               font-weight:600; color:{bar_color}; line-height:1;">
                     {pct}
                 </span>
-                <span style="font-family:'IBM Plex Sans',sans-serif; font-size:1.2rem;
+                <span style="font-family:'Inter',sans-serif; font-size:1.2rem;
                               color:{bar_color}; font-weight:300;">%</span>
             </div>
             <!-- Progress bar -->
@@ -1120,8 +1099,8 @@ if uploaded_file is not None and launch:
                              border-radius:4px; transition:width 0.5s ease;"></div>
             </div>
             <div style="display:flex; justify-content:space-between; margin-top:6px;">
-                <span style="font-size:0.65rem; color:var(--slate-light); font-family:'IBM Plex Mono',monospace;">0%</span>
-                <span style="font-size:0.65rem; color:var(--slate-light); font-family:'IBM Plex Mono',monospace;">100%</span>
+                <span style="font-size:0.65rem; color:var(--slate-light); font-family:'Inter',sans-serif;">0%</span>
+                <span style="font-size:0.65rem; color:var(--slate-light); font-family:'Inter',sans-serif;">100%</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -1134,7 +1113,7 @@ if uploaded_file is not None and launch:
             border-radius:var(--radius-md); padding:1.3rem 1.4rem;
             box-shadow:var(--shadow-sm); margin-bottom:1rem;
         ">
-            <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+            <p style="font-family:'Inter',sans-serif; font-size:0.67rem; font-weight:600;
                        color:var(--slate-light); text-transform:uppercase; letter-spacing:0.12em;
                        margin:0 0 0.9rem; border-bottom:1px solid var(--ivory-dark); padding-bottom:0.7rem;">
                 Métadonnées de l'analyse
@@ -1153,9 +1132,9 @@ if uploaded_file is not None and launch:
             st.markdown(f"""
             <div style="display:flex; justify-content:space-between; align-items:center;
                          padding:5px 0; border-bottom:1px solid #F4F1EC;">
-                <span style="font-family:'IBM Plex Sans',sans-serif; font-size:0.74rem;
+                <span style="font-family:'Inter',sans-serif; font-size:0.74rem;
                               color:var(--slate);">{k}</span>
-                <span style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem;
+                <span style="font-family:'Inter',sans-serif; font-size:0.72rem;
                               color:var(--navy); font-weight:500;">{v}</span>
             </div>
             """, unsafe_allow_html=True)
@@ -1172,7 +1151,7 @@ if uploaded_file is not None and launch:
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0; margin-top:1px; opacity:0.4;">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#0B1929" stroke-width="1.5"/>
         </svg>
-        <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.76rem;
+        <p style="font-family:'Inter',sans-serif; font-size:0.76rem;
                    color:var(--slate); margin:0; font-weight:300; line-height:1.6;">
             <strong style="font-weight:600; color:var(--navy);">Avertissement médico-légal</strong> —
             Ce rapport automatisé constitue un outil de support décisionnel.
@@ -1192,10 +1171,10 @@ st.markdown(f"""
     display:flex; justify-content:space-between; align-items:center;
     padding:0.4rem 0; flex-wrap:wrap; gap:0.5rem;
 ">
-    <span style="font-family:'IBM Plex Sans',sans-serif; font-size:0.72rem; color:var(--slate-light);">
+    <span style="font-family:'Inter',sans-serif; font-size:0.72rem; color:var(--slate-light);">
         Farafin AI for Health &nbsp;·&nbsp; Burkina Faso &nbsp;·&nbsp; Plateforme clinique v2.0.0 &nbsp;·&nbsp; 2026
     </span>
-    <span style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--border);">
+    <span style="font-family:'Inter',sans-serif; font-size:0.68rem; color:var(--border);">
         MobileNetV2 &nbsp;·&nbsp; Usage médical exclusif &nbsp;·&nbsp; Confidentiel
     </span>
 </div>
