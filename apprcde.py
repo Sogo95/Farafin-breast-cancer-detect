@@ -17,6 +17,39 @@ from tensorflow.keras.models import load_model
 from utils import preprocess_image
 
 # ======================================================
+# SESSION STATE INIT (DOIT ÊTRE TOUT EN HAUT)
+# ======================================================
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+if "username" not in st.session_state:
+    st.session_state.username = ""
+
+# ======================================================
+# UTILISATEURS AUTORISÉS (IMPORTANT: AVANT login_page)
+# ======================================================
+AUTHORIZED_USERS = {
+    "admin.armel.sogo": {
+        "password": "BreastAI@2026Secure",
+        "role": "System Administrator",
+        "full_name": "Armel Emmanuel SOGO",
+        "department": "Health Data & AI Unit"
+    },
+    "dr.marie.kabore": {
+        "password": "Radiology@BF2026",
+        "role": "Senior Radiologist",
+        "full_name": "Dr Marie Kaboré",
+        "department": "Radiology Department"
+    },
+    "dr.issa.ouedraogo": {
+        "password": "Oncology@Hospital2026",
+        "role": "Clinical Oncologist",
+        "full_name": "Dr Issa Ouédraogo",
+        "department": "Oncology Department"
+    }
+}
+
+# ======================================================
 # CONFIGURATION GÉNÉRALE
 # ======================================================
 st.set_page_config(
@@ -27,137 +60,86 @@ st.set_page_config(
 )
 
 # ======================================================
-# DESIGN SYSTEM PREMIUM (CLINICAL SAAS)
+# CSS PROFESSIONNEL
 # ======================================================
 st.markdown("""
 <style>
 
-/* GLOBAL */
-html, body {
-    font-family: 'Inter', sans-serif;
-}
-
-/* BACKGROUND */
 .main {
-    background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+    background-color: #f8fafc;
 }
 
-/* CONTAINER */
 .block-container {
-    padding: 2rem 2.5rem;
-    max-width: 1350px;
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+    max-width: 1400px;
 }
 
-/* TITLES */
-h1 {
-    font-size: 34px;
-    font-weight: 800;
+h1, h2, h3 {
     color: #0f172a;
-    letter-spacing: -0.5px;
 }
 
-h2, h3 {
-    color: #0f172a;
-    font-weight: 600;
-}
-
-/* LOGIN CARD */
-.login-box {
-    background: white;
-    padding: 34px;
-    border-radius: 18px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-    transition: 0.3s ease;
-}
-
-.login-box:hover {
-    transform: translateY(-2px);
-}
-
-/* INPUTS */
-input {
-    border-radius: 10px !important;
-}
-
-/* BUTTONS */
 .stButton > button {
     width: 100%;
-    height: 50px;
+    height: 52px;
     border-radius: 12px;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
     background: linear-gradient(90deg, #ec4899, #f43f5e);
     color: white;
     border: none;
-    transition: 0.25s ease;
 }
 
-.stButton > button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(244, 63, 94, 0.25);
+.login-box {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.05);
 }
 
-/* RESULT CARD */
 .result-box {
     background: white;
-    padding: 28px;
-    border-radius: 18px;
-    border-left: 6px solid #ec4899;
-    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
-    margin-top: 15px;
+    padding: 25px;
+    border-radius: 16px;
+    border-left: 5px solid #ec4899;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 }
 
-/* FOOTER */
 .footer-box {
     text-align: center;
-    color: #94a3b8;
-    font-size: 13px;
-    padding: 25px 0 10px 0;
-}
-
-/* SIDEBAR */
-section[data-testid="stSidebar"] {
-    background-color: #0f172a;
-    color: white;
-}
-
-section[data-testid="stSidebar"] * {
-    color: white;
+    color: #64748b;
+    font-size: 14px;
+    padding-top: 20px;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
 # ======================================================
-# LOGIN PAGE (UI UPGRADE UNIQUEMENT)
+# LOGIN PAGE
 # ======================================================
 def login_page():
 
     st.markdown("""
-    <div style="text-align:center; padding-top:20px;">
-        <img src="https://img.icons8.com/color/240/pink-ribbon.png" width="130">
-        <h1 style="margin-bottom:0;">Farafin AI Clinical Platform</h1>
-        <p style="color:#64748b; font-size:16px;">
-            Breast Cancer Decision Support System
-        </p>
+    <div style='text-align:center; margin-bottom:10px;'>
+        <img src='https://img.icons8.com/color/240/pink-ribbon.png' width='140'>
+        <h1>Farafin BreastCancer AI</h1>
+        <p style='color:#64748b;'>Clinical Decision Support System</p>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    col1, col2, col3 = st.columns([1, 1.2, 1])
+    col1, col2, col3 = st.columns([1, 2, 1])
 
     with col2:
-
         st.markdown("<div class='login-box'>", unsafe_allow_html=True)
 
-        st.markdown("### Secure Login")
+        st.subheader("Secure Login")
 
         username = st.text_input("Username")
         password = st.text_input("Password", type="password")
 
-        if st.button("Sign in"):
+        if st.button("Login"):
             if username in AUTHORIZED_USERS and AUTHORIZED_USERS[username]["password"] == password:
                 st.session_state.authenticated = True
                 st.session_state.username = username
@@ -168,34 +150,16 @@ def login_page():
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown("<p style='text-align:center;color:#94a3b8;font-size:12px;'>Restricted access – authorized clinicians only</p>", unsafe_allow_html=True)
-
-
 # ======================================================
-# AUTH (inchangé)
+# AUTH CHECK
 # ======================================================
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
-
-if "username" not in st.session_state:
-    st.session_state.username = ""
-
 if not st.session_state.authenticated:
     login_page()
     st.stop()
 
 # ======================================================
-# USERS
+# USER CONNECTÉ
 # ======================================================
-AUTHORIZED_USERS = {
-    "admin.armel.sogo": {
-        "password": "BreastAI@2026Secure",
-        "role": "System Administrator",
-        "full_name": "Armel Emmanuel SOGO",
-        "department": "Health Data & AI Unit"
-    }
-}
-
 current_user = AUTHORIZED_USERS[st.session_state.username]
 
 # ======================================================
@@ -211,41 +175,30 @@ def load_my_model():
 model = load_my_model()
 
 # ======================================================
-# SIDEBAR (UI CLEAN)
+# SIDEBAR
 # ======================================================
 with st.sidebar:
-    st.markdown("## 👤 User Panel")
-    st.write(f"**{current_user['full_name']}**")
-    st.caption(current_user["role"])
-    st.divider()
+    st.title("User Panel")
+
+    st.success(current_user["full_name"])
+    st.write(current_user["role"])
+    st.write(current_user["department"])
 
     if st.button("Logout"):
         st.session_state.authenticated = False
+        st.session_state.username = ""
         st.rerun()
 
-    st.markdown("### Modules")
-    st.markdown("""
-    - Mammography Analysis  
-    - Lesion Detection AI  
-    - Clinical Decision Support  
-    - Audit Dashboard  
-    """)
-
 # ======================================================
-# MAIN HEADER
+# MAIN UI
 # ======================================================
 st.title("🩺 Breast Cancer AI Clinical Decision Support")
-st.caption("AI-assisted mammography interpretation for clinical decision support")
+st.info("AI assists radiologists in mammography interpretation")
 
 st.divider()
 
-# ======================================================
-# IMAGE UPLOAD
-# ======================================================
-st.subheader("Upload Mammography")
-
 uploaded_file = st.file_uploader(
-    "Upload medical image",
+    "Upload mammography image",
     type=["jpg", "png", "jpeg", "IMG", "DICOM"]
 )
 
@@ -255,15 +208,14 @@ if uploaded_file:
 
     with col1:
         img, img_array = preprocess_image(uploaded_file)
-        st.image(img, caption="Loaded mammography", use_container_width=True)
+        st.image(img, caption="Mammography image", use_container_width=True)
 
     with col2:
-        st.info("Pre-analysis quality check passed")
-
+        st.info("Image loaded successfully")
         launch = st.button("Run AI Analysis")
 
     if launch:
-        with st.spinner("Running inference..."):
+        with st.spinner("Analyzing..."):
             prediction = model.predict(img_array)[0][0]
 
         st.divider()
@@ -274,17 +226,15 @@ if uploaded_file:
             st.markdown("""
             <div class='result-box'>
             <h3>Clinical Interpretation</h3>
-            <p>Model indicates potential malignant pattern.</p>
+            <p>Model suggests possible malignant pattern.</p>
 
             <h4>Recommendations</h4>
             <ul>
-                <li>Immediate radiology review</li>
+                <li>Radiology review</li>
                 <li>Oncology consultation</li>
                 <li>Biopsy consideration</li>
-                <li>Advanced imaging (MRI/US)</li>
+                <li>Advanced imaging</li>
             </ul>
-
-            <b>Clinical note:</b> AI is decision support only.
             </div>
             """, unsafe_allow_html=True)
 
@@ -294,15 +244,13 @@ if uploaded_file:
             st.markdown("""
             <div class='result-box'>
             <h3>Clinical Interpretation</h3>
-            <p>No abnormal patterns detected.</p>
+            <p>No abnormal pattern detected.</p>
 
             <h4>Recommendations</h4>
             <ul>
                 <li>Routine follow-up</li>
-                <li>Clinical correlation required</li>
+                <li>Clinical correlation</li>
             </ul>
-
-            <b>Clinical note:</b> Negative AI result does not exclude disease.
             </div>
             """, unsafe_allow_html=True)
 
