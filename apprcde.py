@@ -57,7 +57,7 @@ html, body, [class*="css"] {
     content: '';
     position: fixed;
     inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    background-image: url("https://www.google.com/imgres?q=octobre%20rose&imgurl=https%3A%2F%2Fmaginfrance.fr%2Fwp-content%2Fuploads%2F2019%2F10%2Fimage-octobre-rose-e1570609381510-750x437.jpg&imgrefurl=https%3A%2F%2Fmaginfrance.fr%2Foctobre-rose-quand-beaute-rime-avec-solidarite%2F&docid=XCqnYO80pg6zcM&tbnid=8YIi-v3fSWZmwM&w=750&h=437&hcb=2");
     pointer-events: none;
     z-index: 0;
 }
