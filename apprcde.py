@@ -372,8 +372,8 @@ def login_page():
     ">
     """, unsafe_allow_html=True)
 
-    username = st.text_input("Identifiant", placeholder="votre.identifiant")
-    password = st.text_input("Mot de passe", type="password", placeholder="••••••••••••")
+    username = st.text_input("Identifiant")
+    password = st.text_input("Mot de passe", type="password")
 
     st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
