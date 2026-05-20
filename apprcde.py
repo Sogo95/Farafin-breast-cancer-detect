@@ -347,10 +347,19 @@ def login_page():
     # LOGO + TITRE
     st.markdown("""
     <div style="text-align:center; margin-bottom: 2.5rem;">
-        
-        <img src='https://img.icons8.com/color/240/pink-ribbon.png' width='160'>
-
-        
+        <div style="
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px; height: 80px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #ec4899, #a855f7);
+            box-shadow: 0 12px 40px rgba(236,72,153,0.45);
+            margin-bottom: 1.5rem;
+        ">
+            
+        </div>
+    <img src='https://img.icons8.com/color/240/pink-ribbon.png' width='160'>
         <h1 style="font-family:'Playfair Display',serif; font-size:1.75rem; font-weight:700; color:white; margin:0 0 8px;">
             Farafin BreastCancer AI Detect
         </h1>
