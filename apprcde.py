@@ -351,12 +351,12 @@ def login_page():
     </div>   
             
           
-        <h1 style="font-family:'Playfair Display',serif; font-size:1.75rem; font-weight:700; color:white; margin:0 0 8px;">
-            Farafin BreastCancer AI Detect
-        </h1>
-        <p style="color:#94b3c8; font-size:0.9rem; margin:0; font-weight:300; letter-spacing:0.05em;">
-            Système d'aide au diagnostic du cancer du Sein
-        </p>
+    <h1 style="font-family:'Playfair Display',serif; font-size:1.75rem; font-weight:700; color:white; margin:0 0 8px;">
+        Farafin BreastCancer AI Detect
+    </h1>
+    <p style="color:#94b3c8; font-size:0.9rem; margin:0; font-weight:300; letter-spacing:0.05em;">
+        Système d'aide au diagnostic du cancer du Sein
+     </p>
     
     """, unsafe_allow_html=True)
     
