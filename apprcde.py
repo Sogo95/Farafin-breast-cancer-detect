@@ -348,7 +348,8 @@ def login_page():
     st.markdown("""
     <div style="text-align:center; margin-bottom: 2.5rem;">
     <img src='https://img.icons8.com/color/240/pink-ribbon.png' width='160'>
-    </div>            
+    </div>   
+            
           
     <h1 style="font-family:'Playfair Display',serif; font-size:1.75rem; font-weight:700; color:white; margin:0 0 8px;">
         Farafin BreastCancer AI Detect
@@ -358,30 +359,8 @@ def login_page():
      </p>
     
     """, unsafe_allow_html=True)
-    ###Conexion
-    import json
-    import os
-
-    SESSION_FILE = "auth_session.json"
-
-
-    def load_auth():
-        if os.path.exists(SESSION_FILE):
-            with open(SESSION_FILE, "r") as f:
-                return json.load(f)
-        return {"username": "", "authenticated": False}
-
-
-    def save_auth(data):
-        with open(SESSION_FILE, "w") as f:
-            json.dump(data, f)  
-            
-    if "authenticated" not in st.session_state:
-        saved = load_auth()
-        st.session_state.authenticated = saved.get("authenticated", False)
-        st.session_state.username = saved.get("username", "")        
-         
-        # CARTE LOGIN
+    
+    # CARTE LOGIN
     st.markdown("""
     <div style="
         background: rgba(255,255,255,0.05);
@@ -393,39 +372,17 @@ def login_page():
     ">
     """, unsafe_allow_html=True)
 
-    # 🔥 AUTO-REMPLISSAGE APRÈS DECONNEXION
-    default_user = st.session_state.get("username", "")
-
-    username = st.text_input(
-        "Identifiant",
-        value=default_user,
-        placeholder="votre.identifiant"
-    )
-
-    password = st.text_input(
-        "Mot de passe",
-        type="password",
-        placeholder="••••••••••••"
-    )
+    username = st.text_input("Identifiant", placeholder="votre.identifiant")
+    password = st.text_input("Mot de passe", type="password", placeholder="••••••••••••")
 
     st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
     if st.button("Accéder à la plateforme →"):
-
         if username in AUTHORIZED_USERS and AUTHORIZED_USERS[username]["password"] == password:
-
             st.session_state.authenticated = True
             st.session_state.username = username
-
-            # 💾 SAUVEGARDE PERSISTANTE
-            save_auth({
-                "authenticated": True,
-                "username": username
-            })
-
             st.success("Accès autorisé — Chargement en cours…")
             st.rerun()
-
         else:
             st.error("Identifiants incorrects ou accès non autorisé.")
 
@@ -433,7 +390,7 @@ def login_page():
 
     st.markdown("""
     <p style='text-align:center; color:rgba(255,255,255,0.3); font-size:0.78rem; margin-top:2rem; letter-spacing:0.05em;'>
-        RÉSERVÉ AUX PROFESSIONNELS DE SANTÉ AUTORISÉS · FARAFIN AI FOR HEALTH © 2026
+        RÉSERVÉ AUX PROFESSIONNELS DE SANTÉ AUTORISÉS &nbsp;·&nbsp; FARAFIN AI FOR HEALTH © 2026
     </p>
     """, unsafe_allow_html=True)
 
@@ -532,10 +489,6 @@ with st.sidebar:
     if st.button("⎋  Déconnexion"):
         st.session_state.authenticated = False
         st.session_state.username = ""
-        save_auth({
-        "authenticated": False,
-        "username": st.session_state.username
-        })
         st.rerun()
 
     st.markdown("""
