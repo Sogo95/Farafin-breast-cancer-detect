@@ -153,7 +153,6 @@ h3 {
     font-size: 0.82rem !important;
     font-weight: 600 !important;
     color: #4a5568 !important;
-    autocomplete: off !important;
     text-transform: uppercase;
     letter-spacing: 0.07em;
     margin-bottom: 6px;
@@ -205,14 +204,12 @@ h3 {
     border: 1px solid rgba(255,255,255,0.15) !important;
     color: #c8d8e8 !important;
     box-shadow: none !important;
-    autocomplete: off !important;
 }
 
 [data-testid="stSidebar"] .stButton > button:hover {
     background: rgba(236,72,153,0.15) !important;
     border-color: rgba(236,72,153,0.4) !important;
     color: white !important;
-    autocomplete: off !important;
 }
 
 /* ── FILE UPLOADER ── */
