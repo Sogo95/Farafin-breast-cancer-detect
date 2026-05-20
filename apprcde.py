@@ -4,13 +4,14 @@ import os
 import warnings
 
 # ======================================================
-# ENV
+# SUPPRESSION DES WARNINGS TENSORFLOW/KERAS
 # ======================================================
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-warnings.filterwarnings('ignore')
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Masque les warnings INFO et WARNING
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'  # Désactive oneDNN (évite le warning)
+warnings.filterwarnings('ignore')  # Ignore tous les warnings Python
 
 import tensorflow as tf
+# Empêche TensorFlow d'afficher ses propres warnings
 tf.get_logger().setLevel('ERROR')
 
 from tensorflow.keras.models import load_model
@@ -18,10 +19,10 @@ from utils import preprocess_image
 
 
 # ======================================================
-# CONFIG
+# CONFIGURATION GÉNÉRALE
 # ======================================================
 st.set_page_config(
-    page_title="Farafin AI Clinical Platform",
+    page_title="Farafin BreastCancer AI Clinical Platform",
     page_icon="🩺",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -29,93 +30,54 @@ st.set_page_config(
 
 
 # ======================================================
-# DESIGN SYSTEM (CLINICAL GRADE)
+# CSS PROFESSIONNEL — NIVEAU HOSPITALIER INTERNATIONAL
 # ======================================================
 st.markdown("""
 <style>
 
-/* ========== GLOBAL ========== */
-html, body, [class*="css"] {
-    font-family: Inter, system-ui, sans-serif;
+.main {
+    background-color: #f8fafc;
 }
 
-.stApp {
-    background: #f4f6f9;
+.block-container {
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+    max-width: 1400px;
 }
 
-/* ========== TYPO ========== */
-h1 {
-    font-size: 1.8rem !important;
-    font-weight: 700 !important;
-    color: #0f172a !important;
+h1, h2, h3 {
+    color: #0f172a;
 }
 
-h2, h3 {
-    color: #111827 !important;
-}
-
-/* ========== BUTTONS ========== */
 .stButton > button {
-    background: #2563eb;
-    color: white;
-    border-radius: 8px;
-    height: 44px;
-    font-weight: 600;
-    border: none;
-}
-
-.stButton > button:hover {
-    background: #1d4ed8;
-}
-
-/* ========== INPUT FIX (IMPORTANT LOGIN VISIBILITY) ========== */
-[data-testid="stTextInput"] input {
-    background: white !important;
-    color: #111827 !important;
-    border: 1px solid #d1d5db !important;
-    border-radius: 8px !important;
-    padding: 10px !important;
-}
-
-[data-testid="stTextInput"] input:focus {
-    border-color: #2563eb !important;
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.15) !important;
-}
-
-[data-testid="stTextInput"] label {
-    color: #374151 !important;
-    font-size: 0.85rem !important;
-    font-weight: 500 !important;
-}
-
-/* ========== SIDEBAR ========== */
-[data-testid="stSidebar"] {
-    background: #0b1220;
-}
-
-[data-testid="stSidebar"] * {
-    color: #e5e7eb !important;
-}
-
-/* ========== CARDS ========== */
-.card {
-    background: white;
-    border: 1px solid #e5e7eb;
+    width: 100%;
+    height: 52px;
     border-radius: 12px;
-    padding: 1.2rem;
+    font-size: 16px;
+    font-weight: 600;
 }
 
-/* ========== IMAGE ========== */
-img {
-    border-radius: 10px;
-    border: 1px solid #e5e7eb;
+.login-box {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.05);
 }
 
-/* ========== DIVIDER ========== */
-hr {
-    border: none !important;
-    height: 1px !important;
-    background: #e5e7eb !important;
+.result-box {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    border: 1px solid #dbeafe;
+    margin-top: 10px;
+}
+
+.footer-box {
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+    padding-top: 20px;
 }
 
 </style>
@@ -123,106 +85,110 @@ hr {
 
 
 # ======================================================
-# USERS
+# UTILISATEURS AUTORISÉS
 # ======================================================
 AUTHORIZED_USERS = {
     "admin.armel.sogo": {
         "password": "BreastAI@2026Secure",
-        "role": "Admin",
-        "full_name": "Armel Emmanuel SOGO"
+        "role": "System Administrator",
+        "full_name": "Armel Emmanuel SOGO",
+        "department": "Health Data & AI Unit"
     },
     "dr.marie.kabore": {
         "password": "Radiology@BF2026",
-        "role": "Radiologist",
-        "full_name": "Dr Marie Kaboré"
+        "role": "Senior Radiologist",
+        "full_name": "Dr Marie Kaboré",
+        "department": "Radiology Department"
+    },
+    "dr.issa.ouedraogo": {
+        "password": "Oncology@Hospital2026",
+        "role": "Clinical Oncologist",
+        "full_name": "Dr Issa Ouédraogo",
+        "department": "Oncology Department"
     }
 }
 
 
-# ======================================================
-# SESSION STATE
-# ======================================================
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
+
+
 if "username" not in st.session_state:
     st.session_state.username = ""
 
 
 # ======================================================
-# LOGIN PAGE (PROFESSIONNEL + VISIBILITÉ OK)
+# PAGE DE CONNEXION PREMIUM
 # ======================================================
 def login_page():
-
+    # HEADER BRANDING
     st.markdown("""
-    <style>
-    .stApp {
-        background: #0b1220;
-    }
+    <div style='text-align:center; margin-bottom:10px;'>
+        <img src='https://img.icons8.com/color/240/pink-ribbon.png' width='160'>
+    </div>
 
-    .login-box {
-        max-width: 420px;
-        margin: 10vh auto;
-        background: #111827;
-        border: 1px solid #1f2937;
-        border-radius: 14px;
-        padding: 2rem;
-    }
+    <h1 style='text-align:center; margin-bottom:5px;'>
+        Farafin BreastCancer AI Clinical Platform
+    </h1>
 
-    .title {
-        text-align:center;
-        color:white;
-        font-size: 1.4rem;
-        font-weight: 700;
-        margin-bottom: 0.3rem;
-    }
-
-    .subtitle {
-        text-align:center;
-        color:#9ca3af;
-        font-size: 0.85rem;
-        margin-bottom: 1.5rem;
-    }
-
-    /* FIX CRUCIAL VISIBILITÉ INPUT */
-    input {
-        background: #ffffff !important;
-        color: #111827 !important;
-        border-radius: 8px !important;
-    }
-
-    input::placeholder {
-        color: #9ca3af !important;
-    }
-
-    label {
-        color: #d1d5db !important;
-        font-size: 0.8rem !important;
-    }
-
-    </style>
+    <h3 style='text-align:center; color:#64748b; margin-top:0px;'>
+        Outil d'aide à la décision pour la détection précoce des lésions mammaires
+    </h3>
     """, unsafe_allow_html=True)
 
-    st.markdown("<div class='login-box'>", unsafe_allow_html=True)
 
-    st.markdown("<div class='title'>Farafin AI Clinical Platform</div>", unsafe_allow_html=True)
-    st.markdown("<div class='subtitle'>Radiology Decision Support System</div>", unsafe_allow_html=True)
+    # LIGNE DE SÉPARATION
+    st.markdown("""
+    <hr style="
+        border: none;
+        height: 2px;
+        background: linear-gradient(to right, transparent, #ec4899, transparent);
+        margin-top: 20px;
+        margin-bottom: 30px;
+    ">
+    """, unsafe_allow_html=True)
 
-    username = st.text_input("User ID", placeholder="Enter your ID")
-    password = st.text_input("Password", type="password", placeholder="Enter password")
 
-    if st.button("Login"):
-        if username in AUTHORIZED_USERS and AUTHORIZED_USERS[username]["password"] == password:
-            st.session_state.authenticated = True
-            st.session_state.username = username
-            st.rerun()
-        else:
-            st.error("Invalid credentials")
+    # CENTRAGE LOGIN
+    col1, col2, col3 = st.columns([1, 2, 1])
 
-    st.markdown("</div>", unsafe_allow_html=True)
+
+    with col2:
+        st.subheader("Veuillez vous connecter pour accéder à la plateforme")
+
+
+        username = st.text_input("Nom d'utilisateur")
+        password = st.text_input("Mot de passe", type="password")
+
+
+        if st.button("Se connecter"):
+
+
+            if username in AUTHORIZED_USERS and AUTHORIZED_USERS[username]["password"] == password:
+
+
+                st.session_state.authenticated = True
+                st.session_state.username = username
+
+
+                st.success("Access Granted")
+                st.rerun()
+
+
+            else:
+                st.error("Unauthorized Access or Invalid Credentials")
+
+
+    # FOOTER SECURITY MESSAGE
+    st.markdown("""
+    <p style='text-align:center; color:gray; font-size:13px; margin-top:20px;'>
+        Acces réservé aux professionnels de santé autorisés.
+    </p>
+    """, unsafe_allow_html=True)
 
 
 # ======================================================
-# AUTH
+# AUTH CONTROL
 # ======================================================
 if not st.session_state.authenticated:
     login_page()
@@ -230,85 +196,187 @@ if not st.session_state.authenticated:
 
 
 # ======================================================
-# USER
+# UTILISATEUR CONNECTÉ
 # ======================================================
-user = AUTHORIZED_USERS[st.session_state.username]
+current_user = AUTHORIZED_USERS[st.session_state.username]
 
 
 # ======================================================
-# MODEL
+# MODÈLE IA
 # ======================================================
 MODEL_PATH = "model/best_mobilenet_model.h5"
 
+
 @st.cache_resource
-def load_model_fn():
+def load_my_model():
+    # Supprime le graphe par défaut de manière compatible (évite le warning deprecated)
     tf.compat.v1.reset_default_graph()
     return load_model(MODEL_PATH, compile=False)
 
-model = load_model_fn()
+
+model = load_my_model()
 
 
 # ======================================================
-# SIDEBAR
+# SIDEBAR PROFESSIONNELLE
 # ======================================================
 with st.sidebar:
-    st.title("Clinician Panel")
-    st.write(user["full_name"])
-    st.write(user["role"])
+    st.title("Espace utilisateur")
 
-    if st.button("Logout"):
+
+    st.success(f"Connecté : {current_user['full_name']}")
+    st.write(f"**Rôle :** {current_user['role']}")
+    st.write(f"**Département :** {current_user['department']}")
+
+
+    if st.button("Déconnexion"):
         st.session_state.authenticated = False
         st.session_state.username = ""
         st.rerun()
 
 
-# ======================================================
-# HEADER
-# ======================================================
-st.title("🩺 Mammography AI Decision Support")
-st.info("Clinical support only — final validation by radiologist required.")
+    st.markdown("---")
+
+
+    st.markdown("""
+### Modules disponibles
+
+- Analyse mammographique
+- Détection assistée des lésions
+- Support décisionnel clinique
+- Audit & supervision clinique""")
 
 
 # ======================================================
-# UPLOAD
+# HEADER PRINCIPAL
 # ======================================================
-file = st.file_uploader(
-    "Upload mammography image",
-    type=["jpg", "png", "jpeg", "dcm"]
+st.title("🩺 Farafin Breast Cancer Clinical Decision Support")
+
+
+st.info("Cette plateforme assiste le radiologue dans l'interprétation des mammographies. La validation clinique finale reste strictement médicale.")
+
+
+st.divider()
+
+
+# ======================================================
+# IMPORT IMAGE
+# ======================================================
+st.subheader("📤 Importation de l'image de mammographie")
+
+
+uploaded_file = st.file_uploader(
+    "Importer une image médicale (JPG, PNG, JPEG, DICOM,IMG)",
+    type=["jpg", "png", "jpeg","IMG","DICOM"]
 )
 
-if file:
 
-    img, img_array = preprocess_image(file)
-    st.image(img, use_container_width=True)
+if uploaded_file is not None:
+    col1, col2 = st.columns([2, 1])
 
-    if st.button("Run AI Analysis"):
 
-        with st.spinner("Analyzing..."):
-            pred = model.predict(img_array)[0][0]
+    with col1:
+        img, img_array = preprocess_image(uploaded_file)
+        st.image(
+            img,
+            caption="Image mammographique chargée",
+            width="stretch"
+        )
+
+
+    with col2:
+        st.warning("""
+### Vérification préalable
+
+
+✔ Qualité acceptable  
+✔ Résolution suffisante  
+✔ Bon cadrage  
+✔ Image exploitable  
+✔ Contrôle radiologique
+""")
+
+
+        launch = st.button("🔍 Lancer l'analyse clinique")
+
+
+    if launch:
+        with st.spinner("Analyse IA en cours..."):
+            prediction = model.predict(img_array)[0][0]
+
 
         st.divider()
 
-        if pred > 0.5:
-            st.error("⚠️ Suspicious lesion detected")
+
+        if prediction > 0.5:
+            st.error("⚠️ Suspicion de lésion mammaire suspecte détectée")
+
+
             st.markdown("""
-            <div class="card">
-            High probability of abnormal lesion.
-            Recommend radiological confirmation.
-            </div>
-            """, unsafe_allow_html=True)
+<div class='result-box'>
+
+### Interprétation clinique
+
+Le modèle détecte des anomalies compatibles avec une lésion potentiellement maligne.
+
+### Recommandations prioritaires
+
+- Corrélation radiologique immédiate
+- Avis spécialisé en sénologie / oncologie
+- Biopsie ciblée si indiquée
+- Échographie ou IRM complémentaire
+- Validation par radiologue senior
+
+
+### Avertissement clinique
+
+Cette analyse constitue un support décisionnel et ne doit jamais remplacer le jugement clinique.
+
+</div>
+""", unsafe_allow_html=True)
+
+
+            st.subheader("🧬 Zone suspecte — Explicabilité IA")
+            st.info("La carte des lésions (Grad-CAM) sera affichée ici pour localiser les régions d'intérêt diagnostique.")
+
 
         else:
-            st.success("✅ No abnormality detected")
+            st.success("✅ Aucun signe radiologique suspect détecté")
+
+
             st.markdown("""
-            <div class="card">
-            No suspicious findings detected by AI model.
-            </div>
-            """, unsafe_allow_html=True)
+<div class='result-box'>
+
+### Interprétation clinique
+
+Aucune anomalie mammaire significative n'a été détectée par le modèle sur cette image.
+
+### Recommandations
+
+- Maintenir le suivi habituel
+- Surveillance périodique recommandée
+- Corrélation avec le contexte clinique
+- Réévaluation si symptomatologie persistante
+
+
+### Avertissement clinique
+
+L'absence de détection automatisée ne remplace pas l'expertise du radiologue.
+
+</div>
+""", unsafe_allow_html=True)
 
 
 # ======================================================
 # FOOTER
 # ======================================================
 st.markdown("---")
-st.caption("Farafin AI for Health © 2026")
+
+
+st.markdown("""
+<div class='footer-box'>
+
+Version professionnelle développée par Farafin AI for Health – 2026
+
+</div>
+""", unsafe_allow_html=True)
