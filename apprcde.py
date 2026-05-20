@@ -359,83 +359,83 @@ def login_page():
     
     """, unsafe_allow_html=True)
     ###Conexion
-import json
-import os
+    import json
+    import os
 
-SESSION_FILE = "auth_session.json"
-
-
-def load_auth():
-    if os.path.exists(SESSION_FILE):
-        with open(SESSION_FILE, "r") as f:
-            return json.load(f)
-    return {"username": "", "authenticated": False}
+    SESSION_FILE = "auth_session.json"
 
 
-def save_auth(data):
-    with open(SESSION_FILE, "w") as f:
-        json.dump(data, f)  
-        
-if "authenticated" not in st.session_state:
-    saved = load_auth()
-    st.session_state.authenticated = saved.get("authenticated", False)
-    st.session_state.username = saved.get("username", "")        
+    def load_auth():
+        if os.path.exists(SESSION_FILE):
+            with open(SESSION_FILE, "r") as f:
+                return json.load(f)
+        return {"username": "", "authenticated": False}
+
+
+    def save_auth(data):
+        with open(SESSION_FILE, "w") as f:
+            json.dump(data, f)  
+            
+    if "authenticated" not in st.session_state:
+        saved = load_auth()
+        st.session_state.authenticated = saved.get("authenticated", False)
+        st.session_state.username = saved.get("username", "")        
          
-    # CARTE LOGIN
-st.markdown("""
-<div style="
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 20px;
-    padding: 2rem 2rem 1.5rem;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 24px 64px rgba(0,0,0,0.3);
-">
-""", unsafe_allow_html=True)
+        # CARTE LOGIN
+    st.markdown("""
+    <div style="
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px;
+        padding: 2rem 2rem 1.5rem;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+    ">
+    """, unsafe_allow_html=True)
 
-# 🔥 AUTO-REMPLISSAGE APRÈS DECONNEXION
-default_user = st.session_state.get("username", "")
+    # 🔥 AUTO-REMPLISSAGE APRÈS DECONNEXION
+    default_user = st.session_state.get("username", "")
 
-username = st.text_input(
-    "Identifiant",
-    value=default_user,
-    placeholder="votre.identifiant"
-)
+    username = st.text_input(
+        "Identifiant",
+        value=default_user,
+        placeholder="votre.identifiant"
+    )
 
-password = st.text_input(
-    "Mot de passe",
-    type="password",
-    placeholder="••••••••••••"
-)
+    password = st.text_input(
+        "Mot de passe",
+        type="password",
+        placeholder="••••••••••••"
+    )
 
-st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
-if st.button("Accéder à la plateforme →"):
+    if st.button("Accéder à la plateforme →"):
 
-    if username in AUTHORIZED_USERS and AUTHORIZED_USERS[username]["password"] == password:
+        if username in AUTHORIZED_USERS and AUTHORIZED_USERS[username]["password"] == password:
 
-        st.session_state.authenticated = True
-        st.session_state.username = username
+            st.session_state.authenticated = True
+            st.session_state.username = username
 
-        # 💾 SAUVEGARDE PERSISTANTE
-        save_auth({
-            "authenticated": True,
-            "username": username
-        })
+            # 💾 SAUVEGARDE PERSISTANTE
+            save_auth({
+                "authenticated": True,
+                "username": username
+            })
 
-        st.success("Accès autorisé — Chargement en cours…")
-        st.rerun()
+            st.success("Accès autorisé — Chargement en cours…")
+            st.rerun()
 
-    else:
-        st.error("Identifiants incorrects ou accès non autorisé.")
+        else:
+            st.error("Identifiants incorrects ou accès non autorisé.")
 
-st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
-st.markdown("""
-<p style='text-align:center; color:rgba(255,255,255,0.3); font-size:0.78rem; margin-top:2rem; letter-spacing:0.05em;'>
-    RÉSERVÉ AUX PROFESSIONNELS DE SANTÉ AUTORISÉS · FARAFIN AI FOR HEALTH © 2026
-</p>
-""", unsafe_allow_html=True)
+    st.markdown("""
+    <p style='text-align:center; color:rgba(255,255,255,0.3); font-size:0.78rem; margin-top:2rem; letter-spacing:0.05em;'>
+        RÉSERVÉ AUX PROFESSIONNELS DE SANTÉ AUTORISÉS · FARAFIN AI FOR HEALTH © 2026
+    </p>
+    """, unsafe_allow_html=True)
 
 
 # ======================================================
