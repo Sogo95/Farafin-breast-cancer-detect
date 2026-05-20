@@ -31,6 +31,7 @@ st.set_page_config(
 # ======================================================
 # CSS PROFESSIONNEL — DESIGN MÉDICAL PREMIUM
 # ======================================================
+# ======================================================
 st.markdown("""
 <style>
 
@@ -129,19 +130,24 @@ h3 {
     letter-spacing: 0.08em;
 }
 
-/* ── INPUTS ── */
-[data-testid="stTextInput"] input {
+/* ── INPUTS (FIX APPLIQUÉ ICI) ── */
+[data-testid="stTextInput"] input,
+input[type="text"],
+input[type="password"] {
     border: 1.5px solid #d0dae8;
     border-radius: 10px;
     padding: 0.7rem 1rem;
     font-family: 'DM Sans', sans-serif;
     font-size: 0.93rem;
     background: #ffffff;
-    color: #1a2332;
+    color: #1a2332 !important;
+    caret-color: #ec4899;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-[data-testid="stTextInput"] input:focus {
+[data-testid="stTextInput"] input:focus,
+input[type="text"]:focus,
+input[type="password"]:focus {
     border-color: #ec4899;
     box-shadow: 0 0 0 3px rgba(236,72,153,0.12);
     outline: none;
@@ -154,6 +160,11 @@ h3 {
     text-transform: uppercase;
     letter-spacing: 0.07em;
     margin-bottom: 6px;
+}
+
+[data-testid="stTextInput"] input::placeholder,
+input::placeholder {
+    color: #94a3b8 !important;
 }
 
 /* ── BOUTONS ── */
@@ -194,20 +205,6 @@ h3 {
 .stButton > button:active {
     transform: translateY(0);
     box-shadow: 0 3px 12px rgba(236,72,153,0.3);
-}
-
-/* Bouton déconnexion sidebar */
-[data-testid="stSidebar"] .stButton > button {
-    background: rgba(255,255,255,0.06) !important;
-    border: 1px solid rgba(255,255,255,0.15) !important;
-    color: #c8d8e8 !important;
-    box-shadow: none !important;
-}
-
-[data-testid="stSidebar"] .stButton > button:hover {
-    background: rgba(236,72,153,0.15) !important;
-    border-color: rgba(236,72,153,0.4) !important;
-    color: white !important;
 }
 
 /* ── FILE UPLOADER ── */
@@ -288,7 +285,6 @@ hr {
 
 </style>
 """, unsafe_allow_html=True)
-
 
 # ======================================================
 # UTILISATEURS AUTORISÉS
