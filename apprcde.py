@@ -334,13 +334,49 @@ def login_page():
     <style>
     .stApp { background: linear-gradient(135deg, #0f1f3d 0%, #1a2d4a 50%, #1e1030 100%) !important; }
     .stApp::before { opacity: 0.06 !important; }
-    .block-container { max-width: 520px !important; margin: 0 auto; padding-top: 4rem !important; }
-    h1 { color: #ffffff !important; font-size: 1.7rem !important; }
-    h3 { color: #94b3c8 !important; text-transform: none !important; letter-spacing: 0 !important; font-weight: 300 !important; font-size: 0.95rem !important; }
-    [data-testid="stTextInput"] label { color: #94b3c8 !important; }
-    [data-testid="stTextInput"] input { background: rgba(255,255,255,0.06) !important; border-color: rgba(255,255,255,0.12) !important; color: #ffffff !important; }
-    [data-testid="stTextInput"] input:focus { border-color: #ec4899 !important; background: rgba(255,255,255,0.09) !important; }
-    [data-testid="stTextInput"] input::placeholder { color: rgba(255,255,255,0.3) !important; }
+
+    .block-container { 
+        max-width: 520px !important; 
+        margin: 0 auto; 
+        padding-top: 4rem !important; 
+    }
+
+    h1 { 
+        color: #ffffff !important; 
+        font-size: 1.7rem !important; 
+    }
+
+    h3 { 
+        color: #94b3c8 !important; 
+        text-transform: none !important; 
+        letter-spacing: 0 !important; 
+        font-weight: 300 !important; 
+        font-size: 0.95rem !important; 
+    }
+
+    [data-testid="stTextInput"] label { 
+        color: #94b3c8 !important; 
+    }
+
+    /* ── FIX INPUT LISIBILITÉ (IMPORTANT) ── */
+    [data-testid="stTextInput"] input {
+        background: rgba(255,255,255,0.08) !important;
+        border-color: rgba(255,255,255,0.18) !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        caret-color: #ec4899 !important;
+    }
+
+    [data-testid="stTextInput"] input:focus {
+        border-color: #ec4899 !important;
+        background: rgba(255,255,255,0.10) !important;
+        outline: none !important;
+    }
+
+    [data-testid="stTextInput"] input::placeholder {
+        color: rgba(255,255,255,0.35) !important;
+    }
+
     </style>
     """, unsafe_allow_html=True)
 
