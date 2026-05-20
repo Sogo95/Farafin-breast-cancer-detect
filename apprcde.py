@@ -345,19 +345,29 @@ def login_page():
     """, unsafe_allow_html=True)
 
     # LOGO + TITRE
-    
     st.markdown("""
-    <div style='text-align:center; margin-bottom:10px;'>
-        <img src='https://img.icons8.com/color/240/pink-ribbon.png' width='160'>
+    <div style="text-align:center; margin-bottom: 2.5rem;">
+        <div style="
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px; height: 80px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #ec4899, #a855f7);
+            box-shadow: 0 12px 40px rgba(236,72,153,0.45);
+            margin-bottom: 1.5rem;
+        ">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z" fill="white"/>
+            </svg>
+        </div>
+        <h1 style="font-family:'Playfair Display',serif; font-size:1.75rem; font-weight:700; color:white; margin:0 0 8px;">
+            Farafin BreastCancer AI Detect
+        </h1>
+        <p style="color:#94b3c8; font-size:0.9rem; margin:0; font-weight:300; letter-spacing:0.05em;">
+            Système d'aide au diagnostic du cancer du Sein
+        </p>
     </div>
-
-    <h1 style='text-align:center; margin-bottom:5px;'>
-        Farafin BreastCancer AI Clinical Platform
-    </h1>
-
-    <h3 style='text-align:center; color:#64748b; margin-top:0px;'>
-        Outil d'aide à la décision pour la détection précoce des lésions mammaires
-    </h3>
     """, unsafe_allow_html=True)
     
     # CARTE LOGIN
