@@ -335,7 +335,7 @@ def login_page():
     .stApp { background: linear-gradient(135deg, #0f1f3d 0%, #1a2d4a 50%, #1e1030 100%) !important; }
     .stApp::before { opacity: 0.06 !important; }
     .block-container { max-width: 520px !important; margin: 0 auto; padding-top: 4rem !important; }
-    h1 { color: #000000 !important; font-size: 1.7rem !important; }
+    h1 { color: #ffffff !important; font-size: 1.7rem !important; }
     h3 { color: #94b3c8 !important; text-transform: none !important; letter-spacing: 0 !important; font-weight: 300 !important; font-size: 0.95rem !important; }
     [data-testid="stTextInput"] label { color: #94b3c8 !important; }
     [data-testid="stTextInput"] input { background: rgba(255,255,255,0.06) !important; border-color: rgba(255,255,255,0.12) !important; color: #000000 !important; }
