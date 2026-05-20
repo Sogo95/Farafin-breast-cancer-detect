@@ -303,12 +303,12 @@ AUTHORIZED_USERS = {
         "department": "Health Data & AI Unit",
         "initials": "AS"
     },
-    "dr.marie.kabore": {
+    "dr.marie.bonou": {
         "password": "Radiology@BF2026",
         "role": "Senior Radiologist",
-        "full_name": "Dr Marie Kaboré",
+        "full_name": "Dr Bonou",
         "department": "Radiology Department",
-        "initials": "MK"
+        "initials": "MB"
     },
     "dr.issa.ouedraogo": {
         "password": "Oncology@Hospital2026",
@@ -509,9 +509,7 @@ col_title, col_badge = st.columns([3, 1])
 with col_title:
     st.markdown("""
     <div style="margin-bottom:0.2rem;">
-        <p style="font-size:0.75rem; color:#ec4899; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:4px;">
-            Plateforme clinique IA
-        </p>
+        
         <h1 style="margin:0;">Bienvenue sur la plateforme d'aide au diagnostic du cancer du sein Assistée par IA </h1>
         <p style="color:#64748b; font-size:0.93rem; margin-top:6px; font-weight:300;">
         </p>
