@@ -428,12 +428,7 @@ with st.sidebar:
     st.markdown("""
     <div style="padding: 0.5rem 0 1rem;">
         <div style="display:flex; align-items:center; gap:10px; margin-bottom:1rem;">
-            <div style="
-                width:42px; height:42px; border-radius:12px;
-                background:linear-gradient(135deg,#ec4899,#a855f7);
-                display:flex; align-items:center; justify-content:center;
-                font-weight:700; font-size:0.85rem; color:white; flex-shrink:0;
-            ">
+            
     """ + current_user['initials'] + """
             </div>
             <div>
