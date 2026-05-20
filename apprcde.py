@@ -360,7 +360,7 @@ def login_page():
             margin-bottom: 1.5rem;
             overflow: hidden;
         ">
-            <img src="assets/rose.jpg" style="width: 70px; height: 70px; object-fit: contain;">
+            <img src="https://www.google.com/imgres?q=octobre%20rose&imgurl=https%3A%2F%2Fmaginfrance.fr%2Fwp-content%2Fuploads%2F2019%2F10%2Fimage-octobre-rose-e1570609381510-750x437.jpg&imgrefurl=https%3A%2F%2Fmaginfrance.fr%2Foctobre-rose-quand-beaute-rime-avec-solidarite%2F&docid=XCqnYO80pg6zcM&tbnid=8YIi-v3fSWZmwM&w=750&h=437&hcb=2" style="width: 70px; height: 70px; object-fit: contain;">
         </div>
 
         <h1 style="font-family:'Playfair Display',serif; font-size:1.75rem; font-weight:700; color:white; margin:0 0 8px;">
