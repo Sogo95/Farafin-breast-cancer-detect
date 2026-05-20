@@ -57,7 +57,7 @@ html, body, [class*="css"] {
     content: '';
     position: fixed;
     inset: 0;
-    background-image: url("data:image/jpeg;base64,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");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
     pointer-events: none;
     z-index: 0;
 }
@@ -347,26 +347,30 @@ def login_page():
     # LOGO + TITRE
     st.markdown("""
     <div style="text-align:center; margin-bottom: 2.5rem;">
+
         <div style="
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 80px; height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 22px;
-            background: linear-gradient(135deg, #ec4899, #a855f7);
-            box-shadow: 0 12px 40px rgba(236,72,153,0.45);
+            background: white;
+            box-shadow: 0 12px 40px rgba(15,31,61,0.15);
             margin-bottom: 1.5rem;
+            overflow: hidden;
         ">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z" fill="white"/>
-            </svg>
+            <img src="assets/rose.jpg" style="width: 70px; height: 70px; object-fit: contain;">
         </div>
+
         <h1 style="font-family:'Playfair Display',serif; font-size:1.75rem; font-weight:700; color:white; margin:0 0 8px;">
             Farafin BreastCancer AI Detect
         </h1>
+
         <p style="color:#94b3c8; font-size:0.9rem; margin:0; font-weight:300; letter-spacing:0.05em;">
             Système d'aide au diagnostic du cancer du Sein
         </p>
+
     </div>
     """, unsafe_allow_html=True)
 
