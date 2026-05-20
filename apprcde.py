@@ -532,6 +532,10 @@ with st.sidebar:
     if st.button("⎋  Déconnexion"):
         st.session_state.authenticated = False
         st.session_state.username = ""
+        save_auth({
+        "authenticated": False,
+        "username": st.session_state.username
+        })
         st.rerun()
 
     st.markdown("""
