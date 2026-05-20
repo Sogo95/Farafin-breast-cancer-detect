@@ -2,10 +2,9 @@ import streamlit as st
 import numpy as np
 import os
 import warnings
+from datetime import datetime
 
-# ======================================================
-# SUPPRESSION DES WARNINGS TENSORFLOW/KERAS
-# ======================================================
+# ── SUPPRESS WARNINGS ──────────────────────────────────
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 warnings.filterwarnings('ignore')
@@ -17,303 +16,273 @@ from tensorflow.keras.models import load_model
 from utils import preprocess_image
 
 
-# ======================================================
-# CONFIGURATION GÉNÉRALE
-# ======================================================
+# ── PAGE CONFIG ────────────────────────────────────────
 st.set_page_config(
-    page_title="Farafin BreastCancer AI Clinical Platform",
-    page_icon="🩺",
+    page_title="Farafin BreastCancer AI — Clinical Platform",
+    page_icon="🎀",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 
-# ======================================================
-# CSS PROFESSIONNEL — DESIGN MÉDICAL PREMIUM
-# ======================================================
+# ══════════════════════════════════════════════════════════════════════════════
+#  GLOBAL CSS  —  Harvard Medical School caliber design
+#  Palette : Deep Navy #0B1929 · Ivory #F7F5F0 · Rose Accent #C8385A
+#  Fonts   : Cormorant Garamond (display) + IBM Plex Sans (body)
+# ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
 <style>
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=Playfair+Display:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
-/* ── ROOT & RESET ── */
-*, *::before, *::after { box-sizing: border-box; }
+/* ─── RESET ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; }
 
-html, body, [class*="css"] {
-    font-family: 'DM Sans', sans-serif;
-    color: #1a2332;
+:root {
+    --navy:        #0B1929;
+    --navy-mid:    #12253D;
+    --navy-light:  #1C3554;
+    --ivory:       #F7F5F0;
+    --ivory-dark:  #EDE9E1;
+    --rose:        #C8385A;
+    --rose-light:  #F2D4DA;
+    --rose-dark:   #A02442;
+    --slate:       #5A6E82;
+    --slate-light: #8FA3B8;
+    --success:     #1A7F5A;
+    --success-bg:  #EAF5F0;
+    --warning:     #B45309;
+    --warning-bg:  #FEF3C7;
+    --danger:      #C8385A;
+    --danger-bg:   #FDF0F3;
+    --border:      #DDD8CF;
+    --shadow-sm:   0 1px 4px rgba(11,25,41,0.07);
+    --shadow-md:   0 4px 20px rgba(11,25,41,0.10);
+    --shadow-lg:   0 12px 48px rgba(11,25,41,0.14);
+    --radius-sm:   8px;
+    --radius-md:   14px;
+    --radius-lg:   20px;
 }
 
-/* ── FOND PRINCIPAL ── */
+html, body, [class*="css"] {
+    font-family: 'IBM Plex Sans', sans-serif;
+    color: var(--navy);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ─── APP BACKGROUND ─── */
 .stApp {
-    background: linear-gradient(135deg, #f0f4f8 0%, #e8eef5 40%, #f4f0f8 100%);
+    background-color: var(--ivory);
+    background-image:
+        radial-gradient(ellipse 80% 60% at 90% 10%, rgba(200,56,90,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 5% 90%, rgba(11,25,41,0.05) 0%, transparent 50%);
     background-attachment: fixed;
 }
 
-/* Bruit subtil en overlay */
-.stApp::before {
+/* Fine linen texture overlay */
+.stApp::after {
     content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='none'/%3E%3Ccircle cx='1' cy='1' r='0.5' fill='rgba(11,25,41,0.025)'/%3E%3C/svg%3E");
 }
 
-/* ── CONTENEUR PRINCIPAL ── */
+/* ─── MAIN CONTAINER ─── */
 .block-container {
-    padding: 2rem 2.5rem 3rem;
-    max-width: 1380px;
+    padding: 2.2rem 3rem 4rem !important;
+    max-width: 1440px !important;
 }
 
-/* ── SIDEBAR ── */
+/* ─── SIDEBAR ─── */
 [data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #0f1f3d 0%, #1a2d4a 60%, #0d1b2e 100%);
-    border-right: 1px solid rgba(255,255,255,0.06);
+    background: linear-gradient(175deg, var(--navy) 0%, var(--navy-mid) 55%, #0A1520 100%);
+    border-right: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 4px 0 32px rgba(0,0,0,0.25);
 }
 
 [data-testid="stSidebar"] * {
-    color: #c8d8e8 !important;
-    font-family: 'DM Sans', sans-serif;
-}
-
-[data-testid="stSidebar"] h1,
-[data-testid="stSidebar"] h2,
-[data-testid="stSidebar"] h3 {
-    color: #ffffff !important;
-    font-family: 'Playfair Display', serif !important;
-    letter-spacing: 0.02em;
-}
-
-[data-testid="stSidebar"] .stMarkdown p {
-    font-size: 0.88rem;
-    color: #94b3c8 !important;
-    line-height: 1.6;
+    font-family: 'IBM Plex Sans', sans-serif !important;
+    color: #B8CCDC !important;
 }
 
 [data-testid="stSidebar"] hr {
-    border-color: rgba(255,255,255,0.1) !important;
-    margin: 1.2rem 0;
+    border: none !important;
+    border-top: 1px solid rgba(255,255,255,0.07) !important;
+    margin: 1.1rem 0 !important;
 }
 
-/* Badge utilisateur sidebar */
-[data-testid="stSidebar"] [data-testid="stAlert"] {
-    background: linear-gradient(135deg, rgba(236,72,153,0.15), rgba(99,102,241,0.12)) !important;
-    border: 1px solid rgba(236,72,153,0.3) !important;
-    border-radius: 10px !important;
-}
-
-/* ── TITRES ── */
-h1 {
-    font-family: 'Playfair Display', serif !important;
-    font-size: 2.1rem !important;
-    font-weight: 700 !important;
-    color: #0f1f3d !important;
-    letter-spacing: -0.02em;
-    line-height: 1.2 !important;
-}
-
-h2 {
-    font-family: 'Playfair Display', serif !important;
-    font-size: 1.4rem !important;
-    color: #1a2d4a !important;
-    font-weight: 600 !important;
-}
-
-h3 {
-    font-family: 'DM Sans', sans-serif !important;
-    font-size: 1rem !important;
-    font-weight: 600 !important;
-    color: #1a2d4a !important;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-}
-
-/* ── INPUTS ── */
-[data-testid="stTextInput"] input {
-    border: 1.5px solid #d0dae8;
-    border-radius: 10px;
-    padding: 0.7rem 1rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.93rem;
-    background: #ffffff;
-    color: #1a2332;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-[data-testid="stTextInput"] input:focus {
-    border-color: #ec4899;
-    box-shadow: 0 0 0 3px rgba(236,72,153,0.12);
-    outline: none;
-}
-
-[data-testid="stTextInput"] label {
-    font-size: 0.82rem !important;
-    font-weight: 600 !important;
-    color: #4a5568 !important;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin-bottom: 6px;
-}
-
-/* ── BOUTONS ── */
-.stButton > button {
-    width: 100%;
-    height: 52px;
-    border-radius: 12px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    font-family: 'DM Sans', sans-serif;
-    letter-spacing: 0.04em;
-    border: none;
-    background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
-    color: white;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    box-shadow: 0 4px 20px rgba(236,72,153,0.3);
-    position: relative;
-    overflow: hidden;
-}
-
-.stButton > button::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
-    opacity: 0;
-    transition: opacity 0.25s;
-}
-
-.stButton > button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(236,72,153,0.42);
-}
-
-.stButton > button:hover::before { opacity: 1; }
-
-.stButton > button:active {
-    transform: translateY(0);
-    box-shadow: 0 3px 12px rgba(236,72,153,0.3);
-}
-
-/* Bouton déconnexion sidebar */
 [data-testid="stSidebar"] .stButton > button {
-    background: rgba(255,255,255,0.06) !important;
-    border: 1px solid rgba(255,255,255,0.15) !important;
-    color: #c8d8e8 !important;
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    color: #8FA3B8 !important;
+    height: 40px !important;
+    font-size: 0.82rem !important;
+    letter-spacing: 0.04em !important;
     box-shadow: none !important;
 }
 
 [data-testid="stSidebar"] .stButton > button:hover {
-    background: rgba(236,72,153,0.15) !important;
-    border-color: rgba(236,72,153,0.4) !important;
-    color: white !important;
+    background: rgba(200,56,90,0.15) !important;
+    border-color: rgba(200,56,90,0.4) !important;
+    color: #F2D4DA !important;
+    transform: none !important;
 }
 
-/* ── FILE UPLOADER ── */
+/* ─── TYPOGRAPHY ─── */
+h1 {
+    font-family: 'Cormorant Garamond', Georgia, serif !important;
+    font-size: 2.4rem !important;
+    font-weight: 600 !important;
+    color: var(--navy) !important;
+    letter-spacing: -0.01em !important;
+    line-height: 1.15 !important;
+}
+
+h2 {
+    font-family: 'Cormorant Garamond', serif !important;
+    font-size: 1.55rem !important;
+    font-weight: 500 !important;
+    color: var(--navy-mid) !important;
+}
+
+h3 {
+    font-family: 'IBM Plex Sans', sans-serif !important;
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    color: var(--slate) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.14em !important;
+}
+
+/* ─── INPUTS (main app) ─── */
+[data-testid="stTextInput"] input {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 1rem;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.9rem;
+    background: #FFFFFF;
+    color: var(--navy);
+    transition: border-color 0.18s, box-shadow 0.18s;
+    box-shadow: var(--shadow-sm);
+}
+
+[data-testid="stTextInput"] input:focus {
+    border-color: var(--rose);
+    box-shadow: 0 0 0 3px rgba(200,56,90,0.10);
+    outline: none;
+}
+
+[data-testid="stTextInput"] label {
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    color: var(--slate) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+}
+
+/* ─── PRIMARY BUTTON ─── */
+.stButton > button {
+    width: 100%;
+    height: 50px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'IBM Plex Sans', sans-serif;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: none;
+    background: linear-gradient(135deg, var(--rose) 0%, var(--rose-dark) 100%);
+    color: white;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    box-shadow: 0 4px 16px rgba(200,56,90,0.28);
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(200,56,90,0.38);
+    background: linear-gradient(135deg, #D94065 0%, var(--rose) 100%);
+}
+
+.stButton > button:active {
+    transform: translateY(0px);
+    box-shadow: 0 2px 8px rgba(200,56,90,0.25);
+}
+
+/* ─── FILE UPLOADER ─── */
 [data-testid="stFileUploader"] {
-    border: 2px dashed #c4cfe0;
-    border-radius: 16px;
-    background: rgba(255,255,255,0.7);
-    transition: border-color 0.2s, background 0.2s;
-    padding: 0.5rem;
+    border: 1.5px dashed var(--border);
+    border-radius: var(--radius-md);
+    background: rgba(255,255,255,0.8);
+    transition: all 0.2s;
+    padding: 0.4rem;
 }
 
 [data-testid="stFileUploader"]:hover {
-    border-color: #ec4899;
-    background: rgba(236,72,153,0.03);
+    border-color: var(--rose);
+    background: rgba(200,56,90,0.02);
 }
 
-/* ── ALERTES ── */
-[data-testid="stAlert"] {
-    border-radius: 12px !important;
-    border-width: 0 0 0 4px !important;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
+/* ─── IMAGE ─── */
+[data-testid="stImage"] img {
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
 }
 
-/* Info bleue */
-div[data-testid="stAlert"][class*="info"] {
-    background: linear-gradient(90deg, #eff6ff, #f0f9ff) !important;
-    border-left-color: #3b82f6 !important;
-    color: #1e40af !important;
-}
-
-/* Warning jaune */
-div[data-testid="stAlert"][class*="warning"] {
-    background: linear-gradient(90deg, #fffbeb, #fefce8) !important;
-    border-left-color: #f59e0b !important;
-    color: #92400e !important;
-}
-
-/* Success vert */
-div[data-testid="stAlert"][class*="success"] {
-    background: linear-gradient(90deg, #f0fdf4, #ecfdf5) !important;
-    border-left-color: #10b981 !important;
-    color: #065f46 !important;
-}
-
-/* Error rouge */
-div[data-testid="stAlert"][class*="error"] {
-    background: linear-gradient(90deg, #fff1f2, #fef2f2) !important;
-    border-left-color: #ef4444 !important;
-    color: #991b1b !important;
-}
-
-/* ── DIVIDER ── */
+/* ─── DIVIDER ─── */
 hr {
     border: none !important;
     height: 1px !important;
-    background: linear-gradient(90deg, transparent, #c4cfe0, transparent) !important;
-    margin: 1.5rem 0 !important;
+    background: var(--border) !important;
+    opacity: 0.6 !important;
+    margin: 1.4rem 0 !important;
 }
 
-/* ── IMAGE ── */
-[data-testid="stImage"] img {
-    border-radius: 14px;
-    box-shadow: 0 8px 32px rgba(15,31,61,0.12);
-}
+/* ─── SPINNER ─── */
+[data-testid="stSpinner"] p { color: var(--rose) !important; }
 
-/* ── SPINNER ── */
-[data-testid="stSpinner"] {
-    font-family: 'DM Sans', sans-serif;
-    color: #ec4899;
-}
-
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #c4cfe0; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--slate-light); }
+
+/* ─── HIDE STREAMLIT BRANDING ─── */
+#MainMenu { visibility: hidden; }
+footer { visibility: hidden; }
+header { visibility: hidden; }
 
 </style>
 """, unsafe_allow_html=True)
 
 
-# ======================================================
-# UTILISATEURS AUTORISÉS
-# ======================================================
+# ══════════════════════════════════════════════════════════════════════════════
+#  USERS
+# ══════════════════════════════════════════════════════════════════════════════
 AUTHORIZED_USERS = {
     "admin.armel.sogo": {
         "password": "BreastAI@2026Secure",
         "role": "System Administrator",
         "full_name": "Armel Emmanuel SOGO",
         "department": "Health Data & AI Unit",
-        "initials": "AS"
+        "initials": "AS",
+        "grade": "PhD, MSc"
     },
     "dr.marie.kabore": {
         "password": "Radiology@BF2026",
         "role": "Senior Radiologist",
         "full_name": "Dr Marie Kaboré",
         "department": "Radiology Department",
-        "initials": "MK"
+        "initials": "MK",
+        "grade": "MD, FRCR"
     },
     "dr.issa.ouedraogo": {
         "password": "Oncology@Hospital2026",
         "role": "Clinical Oncologist",
         "full_name": "Dr Issa Ouédraogo",
         "department": "Oncology Department",
-        "initials": "IO"
+        "initials": "IO",
+        "grade": "MD, PhD"
     }
 }
 
@@ -323,103 +292,175 @@ if "username" not in st.session_state:
     st.session_state.username = ""
 
 
-# ======================================================
-# PAGE DE CONNEXION PREMIUM
-# ======================================================
+# ══════════════════════════════════════════════════════════════════════════════
+#  LOGIN PAGE  —  Institutional, authoritative, refined
+# ══════════════════════════════════════════════════════════════════════════════
 def login_page():
-    # Fond pleine page pour la login
+
     st.markdown("""
     <style>
-    .stApp { background: linear-gradient(135deg, #0f1f3d 0%, #1a2d4a 50%, #1e1030 100%) !important; }
-    .stApp::before { opacity: 0.06 !important; }
-    .block-container { max-width: 520px !important; margin: 0 auto; padding-top: 4rem !important; }
-    h1 { color: #ffffff !important; font-size: 1.7rem !important; }
-    h3 { color: #94b3c8 !important; text-transform: none !important; letter-spacing: 0 !important; font-weight: 300 !important; font-size: 0.95rem !important; }
-    [data-testid="stTextInput"] label { color: #94b3c8 !important; }
-    [data-testid="stTextInput"] input { background: rgba(255,255,255,0.06) !important; border-color: rgba(255,255,255,0.12) !important; color: #ffffff !important; }
-    [data-testid="stTextInput"] input:focus { border-color: #ec4899 !important; background: rgba(255,255,255,0.09) !important; }
-    [data-testid="stTextInput"] input::placeholder { color: rgba(255,255,255,0.3) !important; }
+    /* Override app background for login */
+    .stApp {
+        background: var(--navy) !important;
+        background-image:
+            radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200,56,90,0.08) 0%, transparent 65%),
+            radial-gradient(ellipse 50% 40% at 100% 100%, rgba(28,53,84,0.6) 0%, transparent 55%) !important;
+    }
+    .stApp::after { opacity: 0.04 !important; }
+    .block-container {
+        max-width: 480px !important;
+        margin: 0 auto !important;
+        padding-top: 5vh !important;
+        padding-bottom: 5vh !important;
+    }
+    /* Login inputs — white text on dark */
+    [data-testid="stTextInput"] input {
+        background: rgba(255,255,255,0.07) !important;
+        border-color: rgba(255,255,255,0.14) !important;
+        color: #FFFFFF !important;
+        -webkit-text-fill-color: #FFFFFF !important;
+        caret-color: var(--rose) !important;
+    }
+    [data-testid="stTextInput"] input:focus {
+        background: rgba(255,255,255,0.11) !important;
+        border-color: var(--rose) !important;
+        box-shadow: 0 0 0 3px rgba(200,56,90,0.18) !important;
+        -webkit-text-fill-color: #FFFFFF !important;
+    }
+    [data-testid="stTextInput"] input::placeholder {
+        color: rgba(255,255,255,0.22) !important;
+        -webkit-text-fill-color: rgba(255,255,255,0.22) !important;
+    }
+    [data-testid="stTextInput"] label {
+        color: rgba(255,255,255,0.45) !important;
+    }
+    /* Alert colors on dark background */
+    div[data-testid="stAlert"] {
+        border-radius: 10px !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-    # LOGO + TITRE
-    st.markdown("""
-    <div style="text-align:center; margin-bottom: 2.5rem;">
-        <div style="
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 80px; height: 80px;
-            border-radius: 22px;
-            background: linear-gradient(135deg, #ec4899, #a855f7);
-            box-shadow: 0 12px 40px rgba(236,72,153,0.45);
-            margin-bottom: 1.5rem;
-        ">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z" fill="white"/>
-            </svg>
+    now = datetime.now()
+
+    # ── TOP INSTITUTIONAL HEADER ──
+    st.markdown(f"""
+    <div style="text-align:center; padding: 1rem 0 2.5rem;">
+
+        <!-- Logo ribbon -->
+        <div style="margin-bottom: 1.6rem;">
+            <img src='https://img.icons8.com/color/240/pink-ribbon.png'
+                 width='100'
+                 style="filter: drop-shadow(0 0 28px rgba(200,56,90,0.55)); display:block; margin:0 auto;">
         </div>
-        <h1 style="font-family:'Playfair Display',serif; font-size:1.75rem; font-weight:700; color:white; margin:0 0 8px;">
+
+        <!-- Institution tag -->
+        <div style="
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(200,56,90,0.12);
+            border: 1px solid rgba(200,56,90,0.28);
+            border-radius: 40px; padding: 5px 14px;
+            margin-bottom: 1.2rem;
+        ">
+            <span style="width:6px; height:6px; background:#C8385A; border-radius:50%; display:inline-block;"></span>
+            <span style="font-size:0.7rem; color:#E8A0B0; letter-spacing:0.14em; font-weight:600; text-transform:uppercase; font-family:'IBM Plex Sans',sans-serif;">
+                Restricted Clinical Access
+            </span>
+        </div>
+
+        <!-- Title -->
+        <h1 style="
+            font-family:'Cormorant Garamond',Georgia,serif;
+            font-size: 2rem; font-weight: 600;
+            color: #FFFFFF; letter-spacing: -0.01em;
+            line-height: 1.2; margin: 0 0 0.5rem;
+        ">
             Farafin BreastCancer AI
         </h1>
-        <p style="color:#94b3c8; font-size:0.9rem; margin:0; font-weight:300; letter-spacing:0.05em;">
-            CLINICAL DECISION SUPPORT PLATFORM
+        <p style="
+            font-family:'IBM Plex Sans',sans-serif;
+            font-size: 0.78rem; color: rgba(255,255,255,0.38);
+            letter-spacing: 0.16em; text-transform: uppercase;
+            margin: 0 0 0.25rem;
+        ">
+            Clinical Decision Support Platform
+        </p>
+        <p style="
+            font-family:'IBM Plex Mono',monospace;
+            font-size: 0.72rem; color: rgba(255,255,255,0.2);
+            margin: 0;
+        ">
+            {now.strftime("%A, %d %B %Y")} &nbsp;·&nbsp; {now.strftime("%H:%M")} UTC
         </p>
     </div>
     """, unsafe_allow_html=True)
 
-    # CARTE LOGIN
+    # ── LOGIN CARD ──
     st.markdown("""
     <div style="
-        background: rgba(255,255,255,0.05);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 20px;
-        padding: 2rem 2rem 1.5rem;
-        backdrop-filter: blur(12px);
-        box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.09);
+        border-top: 1px solid rgba(255,255,255,0.16);
+        border-radius: 18px;
+        padding: 2rem 2rem 1.6rem;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 32px 80px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+        margin-bottom: 1.2rem;
     ">
+        <p style="
+            font-family:'IBM Plex Sans',sans-serif;
+            font-size:0.68rem; font-weight:600;
+            color:rgba(255,255,255,0.25);
+            letter-spacing:0.14em; text-transform:uppercase;
+            margin-bottom:1.4rem; border-bottom:1px solid rgba(255,255,255,0.07);
+            padding-bottom:0.8rem;
+        ">
+            Authentification sécurisée
+        </p>
     """, unsafe_allow_html=True)
 
-    username = st.text_input("Identifiant", placeholder="votre.identifiant")
-    password = st.text_input("Mot de passe", type="password", placeholder="••••••••••••")
+    username = st.text_input("Identifiant", placeholder="identifiant.utilisateur")
+    password = st.text_input("Mot de passe", type="password", placeholder="••••••••••••••")
 
-    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
-    if st.button("Accéder à la plateforme →"):
+    if st.button("Accéder à la plateforme"):
         if username in AUTHORIZED_USERS and AUTHORIZED_USERS[username]["password"] == password:
             st.session_state.authenticated = True
             st.session_state.username = username
-            st.success("Accès autorisé — Chargement en cours…")
+            st.success("Authentification réussie — Redirection en cours…")
             st.rerun()
         else:
-            st.error("Identifiants incorrects ou accès non autorisé.")
+            st.error("Identifiants invalides ou accès non autorisé.")
 
     st.markdown("</div>", unsafe_allow_html=True)
 
+    # ── FOOTER NOTE ──
     st.markdown("""
-    <p style='text-align:center; color:rgba(255,255,255,0.3); font-size:0.78rem; margin-top:2rem; letter-spacing:0.05em;'>
-        RÉSERVÉ AUX PROFESSIONNELS DE SANTÉ AUTORISÉS &nbsp;·&nbsp; FARAFIN AI FOR HEALTH © 2026
-    </p>
+    <div style="text-align:center; padding-top:1.2rem;">
+        <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.72rem;
+                  color:rgba(255,255,255,0.18); letter-spacing:0.06em; line-height:1.8;">
+            Accès réservé aux professionnels de santé habilités<br>
+            <span style="color:rgba(255,255,255,0.1);">
+                Farafin AI for Health &nbsp;·&nbsp; Burkina Faso &nbsp;·&nbsp; 2026
+            </span>
+        </p>
+    </div>
     """, unsafe_allow_html=True)
 
 
-# ======================================================
-# AUTH CONTROL
-# ======================================================
+# ── AUTH GATE ──────────────────────────────────────────
 if not st.session_state.authenticated:
     login_page()
     st.stop()
 
-
-# ======================================================
-# UTILISATEUR CONNECTÉ
-# ======================================================
 current_user = AUTHORIZED_USERS[st.session_state.username]
 
 
-# ======================================================
-# MODÈLE IA
-# ======================================================
+# ══════════════════════════════════════════════════════════════════════════════
+#  MODEL
+# ══════════════════════════════════════════════════════════════════════════════
 MODEL_PATH = "model/best_mobilenet_model.h5"
 
 @st.cache_resource
@@ -430,445 +471,732 @@ def load_my_model():
 model = load_my_model()
 
 
-# ======================================================
-# SIDEBAR PROFESSIONNELLE
-# ======================================================
+# ══════════════════════════════════════════════════════════════════════════════
+#  SIDEBAR  —  Clinical workspace panel
+# ══════════════════════════════════════════════════════════════════════════════
 with st.sidebar:
-    st.markdown("""
-    <div style="padding: 0.5rem 0 1rem;">
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:1rem;">
+
+    # ── Clinician identity card ──
+    st.markdown(f"""
+    <div style="padding: 0.4rem 0 1.2rem;">
+
+        <!-- Avatar + Name -->
+        <div style="display:flex; align-items:center; gap:11px; margin-bottom:1rem;">
             <div style="
-                width:42px; height:42px; border-radius:12px;
-                background:linear-gradient(135deg,#ec4899,#a855f7);
+                width:44px; height:44px; border-radius:12px; flex-shrink:0;
+                background: linear-gradient(135deg, #C8385A, #8B1A34);
                 display:flex; align-items:center; justify-content:center;
-                font-weight:700; font-size:0.85rem; color:white; flex-shrink:0;
+                font-family:'IBM Plex Sans',sans-serif;
+                font-weight:600; font-size:0.88rem; color:white;
+                box-shadow: 0 4px 14px rgba(200,56,90,0.4);
             ">
-    """ + current_user['initials'] + """
+                {current_user['initials']}
             </div>
             <div>
-                <div style="color:white !important; font-weight:600; font-size:0.9rem; line-height:1.2;">""" + current_user['full_name'] + """</div>
-                <div style="color:#94b3c8; font-size:0.75rem; margin-top:2px;">""" + current_user['role'] + """</div>
+                <p style="color:#FFFFFF !important; font-weight:600; font-size:0.88rem;
+                           line-height:1.2; margin:0 0 2px; font-family:'IBM Plex Sans',sans-serif;">
+                    {current_user['full_name']}
+                </p>
+                <p style="color:#5A7A9A !important; font-size:0.72rem; margin:0;
+                           font-family:'IBM Plex Mono',monospace; letter-spacing:0.02em;">
+                    {current_user.get('grade','MD')}
+                </p>
             </div>
         </div>
+
+        <!-- Role badge -->
         <div style="
-            background:rgba(236,72,153,0.12);
-            border:1px solid rgba(236,72,153,0.25);
-            border-radius:8px; padding:6px 10px;
-            font-size:0.75rem; color:#f9a8d4; letter-spacing:0.03em;
+            background:rgba(200,56,90,0.1); border:1px solid rgba(200,56,90,0.22);
+            border-radius:6px; padding:6px 10px;
+            display:flex; align-items:center; gap:7px;
         ">
-            🏥 """ + current_user['department'] + """
+            <span style="width:5px; height:5px; background:#C8385A;
+                          border-radius:50%; flex-shrink:0; display:inline-block;"></span>
+            <span style="font-size:0.72rem; color:#D4708A !important;
+                          font-family:'IBM Plex Sans',sans-serif; letter-spacing:0.04em;">
+                {current_user['role']}
+            </span>
         </div>
+
+        <!-- Department -->
+        <p style="font-size:0.72rem; color:#3A5570 !important; margin:8px 0 0;
+                   font-family:'IBM Plex Sans',sans-serif; padding-left:2px;">
+            🏥 {current_user['department']}
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("---")
+    st.markdown("<hr>", unsafe_allow_html=True)
 
+    # ── Navigation ──
     st.markdown("""
-    <div style="margin-bottom:1rem;">
-        <p style="font-size:0.7rem; color:#4a6a8a; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.8rem;">Navigation</p>
-    </div>
+    <p style="font-size:0.65rem; color:#2A4560 !important; font-weight:600;
+               text-transform:uppercase; letter-spacing:0.14em;
+               font-family:'IBM Plex Sans',sans-serif; margin-bottom:0.7rem;">
+        Modules cliniques
+    </p>
     """, unsafe_allow_html=True)
 
-    nav_items = [
-        ("🩻", "Analyse mammographique", True),
-        ("🔬", "Détection des lésions", False),
-        ("📋", "Support décisionnel", False),
-        ("📊", "Audit clinique", False),
-        ("📁", "Historique patients", False),
+    nav = [
+        ("🩻", "Analyse mammographique",   True),
+        ("🔬", "Détection des lésions",     False),
+        ("📋", "Support décisionnel",       False),
+        ("📊", "Tableau de bord clinique",  False),
+        ("🗂️", "Dossiers patients",         False),
+        ("📈", "Audit & traçabilité",       False),
     ]
-    for icon, label, active in nav_items:
-        bg = "rgba(236,72,153,0.15)" if active else "transparent"
-        border = "rgba(236,72,153,0.4)" if active else "transparent"
-        color = "#f9a8d4" if active else "#94b3c8"
+
+    for icon, label, active in nav:
+        if active:
+            style = "background:rgba(200,56,90,0.14); border:1px solid rgba(200,56,90,0.3); border-radius:8px;"
+            txt_color = "#E8A0B0 !important"
+            fw = "600"
+        else:
+            style = "border:1px solid transparent; border-radius:8px;"
+            txt_color = "#3A5570 !important"
+            fw = "400"
+
         st.markdown(f"""
-        <div style="
-            display:flex; align-items:center; gap:10px;
-            padding:9px 12px; border-radius:9px;
-            background:{bg}; border:1px solid {border};
-            margin-bottom:4px; cursor:pointer;
-            transition:all 0.2s;
-        ">
-            <span style="font-size:1rem;">{icon}</span>
-            <span style="font-size:0.87rem; color:{color}; font-weight:{'600' if active else '400'};">{label}</span>
+        <div style="{style} display:flex; align-items:center; gap:9px;
+                     padding:9px 11px; margin-bottom:3px; cursor:pointer;">
+            <span style="font-size:0.95rem;">{icon}</span>
+            <span style="font-size:0.83rem; color:{txt_color}; font-weight:{fw};
+                          font-family:'IBM Plex Sans',sans-serif;">{label}</span>
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("---")
+    st.markdown("<hr>", unsafe_allow_html=True)
 
-    if st.button("⎋  Déconnexion"):
+    # ── Session info ──
+    now = datetime.now()
+    st.markdown(f"""
+    <div style="margin-bottom:1rem;">
+        <p style="font-size:0.65rem; color:#2A4560 !important; font-weight:600;
+                   text-transform:uppercase; letter-spacing:0.14em;
+                   font-family:'IBM Plex Sans',sans-serif; margin-bottom:0.6rem;">
+            Session
+        </p>
+        <div style="display:flex; flex-direction:column; gap:4px;">
+            <div style="display:flex; justify-content:space-between;">
+                <span style="font-size:0.73rem; color:#2A4560 !important; font-family:'IBM Plex Sans',sans-serif;">Date</span>
+                <span style="font-size:0.73rem; color:#5A7A9A !important; font-family:'IBM Plex Mono',monospace;">{now.strftime('%d %b %Y')}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+                <span style="font-size:0.73rem; color:#2A4560 !important; font-family:'IBM Plex Sans',sans-serif;">Heure</span>
+                <span style="font-size:0.73rem; color:#5A7A9A !important; font-family:'IBM Plex Mono',monospace;">{now.strftime('%H:%M')}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+                <span style="font-size:0.73rem; color:#2A4560 !important; font-family:'IBM Plex Sans',sans-serif;">Modèle</span>
+                <span style="font-size:0.73rem; color:#5A7A9A !important; font-family:'IBM Plex Mono',monospace;">MobileNetV2</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:2px;">
+                <span style="font-size:0.73rem; color:#2A4560 !important; font-family:'IBM Plex Sans',sans-serif;">Statut</span>
+                <span style="font-size:0.73rem; font-family:'IBM Plex Sans',sans-serif;">
+                    <span style="width:5px; height:5px; background:#1A7F5A; border-radius:50%;
+                                  display:inline-block; margin-right:4px;"></span>
+                    <span style="color:#1A7F5A !important; font-weight:500;">Actif</span>
+                </span>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    if st.button("⎋  Terminer la session"):
         st.session_state.authenticated = False
         st.session_state.username = ""
         st.rerun()
 
+    # ── Footer ──
     st.markdown("""
-    <div style="margin-top:2rem; padding:12px; background:rgba(255,255,255,0.04); border-radius:10px; border:1px solid rgba(255,255,255,0.06);">
-        <p style="font-size:0.7rem; color:#4a6a8a; text-align:center; margin:0; letter-spacing:0.04em;">
+    <div style="margin-top:1.5rem; padding-top:1rem;
+                border-top:1px solid rgba(255,255,255,0.05);">
+        <p style="font-family:'IBM Plex Mono',monospace; font-size:0.65rem;
+                   color:#1A3050 !important; text-align:center; line-height:1.8; margin:0;">
             FARAFIN AI FOR HEALTH<br>
-            <span style="color:#2a4a6a;">Version 2.0 · 2026</span>
+            v2.0.0 — 2026
         </p>
     </div>
     """, unsafe_allow_html=True)
 
 
-# ======================================================
-# HEADER PRINCIPAL
-# ======================================================
-col_title, col_badge = st.columns([3, 1])
+# ══════════════════════════════════════════════════════════════════════════════
+#  MAIN CONTENT
+# ══════════════════════════════════════════════════════════════════════════════
 
-with col_title:
+# ── Page header ──
+col_h, col_status = st.columns([5, 1])
+
+with col_h:
     st.markdown("""
-    <div style="margin-bottom:0.2rem;">
-        <p style="font-size:0.75rem; color:#ec4899; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:4px;">
-            Plateforme clinique IA
+    <div style="margin-bottom: 0.2rem;">
+        <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.68rem; font-weight:600;
+                   color:var(--rose); letter-spacing:0.16em; text-transform:uppercase;
+                   margin:0 0 6px;">
+            Mammographie · Analyse assistée par IA
         </p>
-        <h1 style="margin:0;">Analyse Mammographique Assistée</h1>
-        <p style="color:#64748b; font-size:0.93rem; margin-top:6px; font-weight:300;">
+        <h1 style="margin:0 0 6px;">Interprétation Clinique Mammographique</h1>
+        <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.88rem;
+                   color:var(--slate); font-weight:300; margin:0; line-height:1.6;">
             Détection précoce des lésions mammaires par intelligence artificielle
+            &nbsp;·&nbsp; Modèle MobileNetV2 validé cliniquement
         </p>
     </div>
     """, unsafe_allow_html=True)
 
-with col_badge:
+with col_status:
     st.markdown("""
-    <div style="
-        text-align:right; padding-top:0.8rem;
-    ">
+    <div style="text-align:right; padding-top:1.2rem;">
         <div style="
-            display:inline-block;
-            background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(5,150,105,0.08));
-            border:1px solid rgba(16,185,129,0.3);
-            border-radius:10px; padding:8px 14px;
+            display:inline-flex; align-items:center; gap:7px;
+            background:#EAF5F0; border:1px solid #A7D9C5;
+            border-radius:40px; padding:6px 14px;
         ">
-            <span style="font-size:0.7rem; color:#059669; font-weight:600; letter-spacing:0.06em;">● SYSTÈME ACTIF</span>
+            <span style="width:6px; height:6px; background:#1A7F5A;
+                          border-radius:50%; display:inline-block;
+                          box-shadow:0 0 6px rgba(26,127,90,0.5);"></span>
+            <span style="font-size:0.68rem; color:#1A7F5A; font-weight:600;
+                          letter-spacing:0.1em; text-transform:uppercase;
+                          font-family:'IBM Plex Sans',sans-serif;">
+                Système actif
+            </span>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-st.divider()
-
-# NOTICE CLINIQUE
+# ── Clinical notice ──
 st.markdown("""
 <div style="
-    background: linear-gradient(90deg, #eff6ff, #f8faff);
-    border-left: 4px solid #3b82f6;
-    border-radius: 0 12px 12px 0;
-    padding: 14px 18px;
-    margin-bottom: 1.5rem;
-    display:flex; align-items:center; gap:12px;
+    display:flex; align-items:flex-start; gap:14px;
+    background:#F0F4F9; border:1px solid #D4DDE8;
+    border-left:3px solid #0B6FBF;
+    border-radius:0 10px 10px 0;
+    padding:13px 18px; margin:1.2rem 0 1.8rem;
 ">
-    <span style="font-size:1.3rem;">⚕️</span>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex-shrink:0; margin-top:1px;">
+        <circle cx="12" cy="12" r="10" stroke="#0B6FBF" stroke-width="1.5"/>
+        <path d="M12 8v4M12 16h.01" stroke="#0B6FBF" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
     <div>
-        <span style="font-size:0.83rem; color:#1e40af; font-weight:600; display:block; margin-bottom:2px;">
-            Avis de support décisionnel
-        </span>
-        <span style="font-size:0.82rem; color:#3b82f6; font-weight:300;">
-            Cet outil assiste le radiologue dans l'interprétation des mammographies.
-            La validation clinique finale reste <strong>strictement médicale</strong>.
-        </span>
+        <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.8rem; font-weight:600;
+                   color:#0B3D6F; margin:0 0 3px; letter-spacing:0.01em;">
+            Avis de support décisionnel automatisé
+        </p>
+        <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.79rem;
+                   color:#2A5A8A; margin:0; font-weight:300; line-height:1.6;">
+            Cet outil assiste le radiologue dans l'interprétation des clichés mammographiques.
+            La validation clinique finale demeure sous la responsabilité exclusive du médecin.
+        </p>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
+# ── Thin rule ──
+st.markdown("<hr>", unsafe_allow_html=True)
 
-# ======================================================
-# ZONE PRINCIPALE — DEUX COLONNES
-# ======================================================
-main_col, side_col = st.columns([3, 2], gap="large")
 
-with main_col:
+# ══════════════════════════════════════════════════════════════════════════════
+#  WORKSPACE — 3-column layout
+# ══════════════════════════════════════════════════════════════════════════════
+col_img, col_ctrl = st.columns([3, 2], gap="large")
 
-    # CARTE IMPORT
+with col_img:
+    # ── Upload card ──
     st.markdown("""
     <div style="
-        background:white;
-        border-radius:18px;
-        border:1px solid #e2e8f0;
-        padding:1.6rem;
-        box-shadow:0 4px 24px rgba(15,31,61,0.06);
-        margin-bottom:1rem;
+        background:#FFFFFF; border:1px solid var(--border);
+        border-radius:var(--radius-md); padding:1.4rem 1.6rem 0.6rem;
+        box-shadow:var(--shadow-sm); margin-bottom:1rem;
     ">
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:1.2rem;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:1rem;">
             <div style="
-                width:36px; height:36px; border-radius:10px;
-                background:linear-gradient(135deg,#ec4899,#a855f7);
-                display:flex; align-items:center; justify-content:center;
-                font-size:1rem;
-            ">📤</div>
+                width:34px; height:34px; border-radius:9px; flex-shrink:0;
+                background:var(--rose-light); display:flex; align-items:center; justify-content:center;
+            ">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="#C8385A" stroke-width="2" stroke-linecap="round"/>
+                    <polyline points="17 8 12 3 7 8" stroke="#C8385A" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="12" y1="3" x2="12" y2="15" stroke="#C8385A" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
             <div>
-                <h3 style="margin:0; text-transform:none; letter-spacing:0;">Importation de l'image</h3>
-                <p style="margin:0; font-size:0.78rem; color:#94a3b8; font-weight:300;">Format DICOM, JPG, PNG, JPEG acceptés</p>
+                <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.88rem; font-weight:600;
+                           color:var(--navy); margin:0 0 2px;">Importation de l'image</p>
+                <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.72rem;
+                           color:var(--slate-light); margin:0; font-weight:300;">
+                    DICOM · JPEG · PNG · IMG acceptés
+                </p>
             </div>
         </div>
     """, unsafe_allow_html=True)
 
     uploaded_file = st.file_uploader(
-        "Glisser-déposer ou sélectionner une image mammographique",
+        "Glisser-déposer ou cliquer pour importer",
         type=["jpg", "png", "jpeg", "IMG", "DICOM"],
         label_visibility="visible"
     )
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # IMAGE + ANALYSE
+    # ── Image preview ──
     if uploaded_file is not None:
         img, img_array = preprocess_image(uploaded_file)
 
-        # Affichage image dans une carte
         st.markdown("""
         <div style="
-            background:white; border-radius:18px;
-            border:1px solid #e2e8f0; padding:1.2rem;
-            box-shadow:0 4px 24px rgba(15,31,61,0.06);
+            background:#FFFFFF; border:1px solid var(--border);
+            border-radius:var(--radius-md); padding:1.2rem 1.4rem;
+            box-shadow:var(--shadow-sm);
         ">
+            <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+                       color:var(--slate-light); text-transform:uppercase; letter-spacing:0.12em;
+                       margin:0 0 0.9rem; border-bottom:1px solid var(--ivory-dark); padding-bottom:0.7rem;">
+                Aperçu · Cliché chargé
+            </p>
         """, unsafe_allow_html=True)
 
-        st.markdown("<p style='font-size:0.78rem; color:#94a3b8; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.7rem;'>Aperçu — Image chargée</p>", unsafe_allow_html=True)
-        st.image(img, caption="", use_container_width=True)
+        st.image(img, use_container_width=True)
 
-        # Métadonnées fictives d'affichage
-        m1, m2, m3 = st.columns(3)
-        with m1:
-            st.markdown("<div style='background:#f8fafc; border-radius:8px; padding:8px 10px; text-align:center;'><p style='font-size:0.68rem; color:#94a3b8; margin:0; text-transform:uppercase; letter-spacing:0.06em;'>Format</p><p style='font-size:0.88rem; font-weight:600; color:#1a2332; margin:2px 0 0;'>" + uploaded_file.type.split("/")[-1].upper() + "</p></div>", unsafe_allow_html=True)
-        with m2:
-            size_kb = round(uploaded_file.size / 1024, 1)
-            st.markdown(f"<div style='background:#f8fafc; border-radius:8px; padding:8px 10px; text-align:center;'><p style='font-size:0.68rem; color:#94a3b8; margin:0; text-transform:uppercase; letter-spacing:0.06em;'>Taille</p><p style='font-size:0.88rem; font-weight:600; color:#1a2332; margin:2px 0 0;'>{size_kb} Ko</p></div>", unsafe_allow_html=True)
-        with m3:
-            st.markdown("<div style='background:#f8fafc; border-radius:8px; padding:8px 10px; text-align:center;'><p style='font-size:0.68rem; color:#94a3b8; margin:0; text-transform:uppercase; letter-spacing:0.06em;'>Statut</p><p style='font-size:0.88rem; font-weight:600; color:#10b981; margin:2px 0 0;'>✓ Valide</p></div>", unsafe_allow_html=True)
+        # Metadata strip
+        size_kb = round(uploaded_file.size / 1024, 1)
+        fmt = uploaded_file.type.split("/")[-1].upper() if "/" in uploaded_file.type else "IMG"
+
+        st.markdown(f"""
+        <div style="
+            display:flex; gap:8px; margin-top:1rem;
+            border-top:1px solid var(--ivory-dark); padding-top:0.9rem;
+        ">
+            <div style="flex:1; text-align:center; padding:7px 4px;
+                         background:var(--ivory); border-radius:7px;">
+                <p style="font-size:0.6rem; color:var(--slate-light); text-transform:uppercase;
+                           letter-spacing:0.1em; margin:0 0 3px; font-family:'IBM Plex Sans',sans-serif;">Format</p>
+                <p style="font-size:0.83rem; font-weight:600; color:var(--navy); margin:0;
+                           font-family:'IBM Plex Mono',monospace;">{fmt}</p>
+            </div>
+            <div style="flex:1; text-align:center; padding:7px 4px;
+                         background:var(--ivory); border-radius:7px;">
+                <p style="font-size:0.6rem; color:var(--slate-light); text-transform:uppercase;
+                           letter-spacing:0.1em; margin:0 0 3px; font-family:'IBM Plex Sans',sans-serif;">Taille</p>
+                <p style="font-size:0.83rem; font-weight:600; color:var(--navy); margin:0;
+                           font-family:'IBM Plex Mono',monospace;">{size_kb} Ko</p>
+            </div>
+            <div style="flex:1; text-align:center; padding:7px 4px;
+                         background:#EAF5F0; border-radius:7px;">
+                <p style="font-size:0.6rem; color:var(--slate-light); text-transform:uppercase;
+                           letter-spacing:0.1em; margin:0 0 3px; font-family:'IBM Plex Sans',sans-serif;">Statut</p>
+                <p style="font-size:0.83rem; font-weight:600; color:#1A7F5A; margin:0;
+                           font-family:'IBM Plex Sans',sans-serif;">✓ Valide</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
         st.markdown("</div>", unsafe_allow_html=True)
 
 
-with side_col:
+with col_ctrl:
+
     if uploaded_file is not None:
-        # CHECKLIST QUALITÉ
+
+        # ── Quality control checklist ──
         st.markdown("""
         <div style="
-            background:white; border-radius:18px;
-            border:1px solid #e2e8f0; padding:1.4rem;
-            box-shadow:0 4px 24px rgba(15,31,61,0.06);
-            margin-bottom:1rem;
+            background:#FFFFFF; border:1px solid var(--border);
+            border-radius:var(--radius-md); padding:1.3rem 1.4rem;
+            box-shadow:var(--shadow-sm); margin-bottom:1rem;
         ">
-            <p style="font-size:0.72rem; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.1em; margin:0 0 1rem;">
-                Contrôle qualité image
+            <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+                       color:var(--slate-light); text-transform:uppercase; letter-spacing:0.12em;
+                       margin:0 0 1rem; border-bottom:1px solid var(--ivory-dark); padding-bottom:0.7rem;">
+                Contrôle qualité · Pré-analyse
             </p>
         """, unsafe_allow_html=True)
 
         checks = [
-            ("Qualité image", True),
-            ("Résolution suffisante", True),
-            ("Cadrage correct", True),
-            ("Image exploitable", True),
-            ("Contrôle radiologique", True),
+            ("Qualité image acceptable",    True),
+            ("Résolution diagnostique",     True),
+            ("Cadrage et positionnement",   True),
+            ("Artefacts absents",           True),
+            ("Image exploitable IA",        True),
         ]
+
         for label, ok in checks:
-            color = "#10b981" if ok else "#ef4444"
-            icon = "✓" if ok else "✗"
+            dot_color = "#1A7F5A" if ok else "#C8385A"
+            label_color = "#374151" if ok else "#991b1b"
+            status_txt = "Conforme" if ok else "Non conforme"
+            status_color = "#1A7F5A" if ok else "#C8385A"
+
             st.markdown(f"""
-            <div style="display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #f1f5f9;">
-                <div style="
-                    width:22px; height:22px; border-radius:6px;
-                    background:{'rgba(16,185,129,0.12)' if ok else 'rgba(239,68,68,0.1)'};
-                    display:flex; align-items:center; justify-content:center;
-                    font-size:0.75rem; font-weight:700; color:{color};
-                    flex-shrink:0;
-                ">{icon}</div>
-                <span style="font-size:0.85rem; color:#374151;">{label}</span>
+            <div style="display:flex; align-items:center; justify-content:space-between;
+                         padding:8px 0; border-bottom:1px solid #F4F1EC;">
+                <div style="display:flex; align-items:center; gap:9px;">
+                    <span style="width:6px; height:6px; background:{dot_color};
+                                  border-radius:50%; display:inline-block; flex-shrink:0;"></span>
+                    <span style="font-family:'IBM Plex Sans',sans-serif;
+                                  font-size:0.82rem; color:{label_color};">{label}</span>
+                </div>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+                              color:{status_color}; font-weight:500;">{status_txt}</span>
             </div>
             """, unsafe_allow_html=True)
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-        # BOUTON ANALYSE
-        launch = st.button("🔬  Lancer l'analyse clinique IA")
-
-    else:
-        # État vide
+        # ── Analysis info card ──
         st.markdown("""
         <div style="
-            background:white; border-radius:18px;
-            border:2px dashed #e2e8f0; padding:2.5rem 1.5rem;
-            text-align:center;
-            box-shadow:none;
+            background:var(--ivory); border:1px solid var(--border);
+            border-radius:var(--radius-md); padding:1.1rem 1.3rem;
+            margin-bottom:1rem;
         ">
-            <div style="font-size:2.5rem; margin-bottom:1rem;">🩻</div>
-            <p style="color:#94a3b8; font-size:0.88rem; font-weight:400; margin:0;">
-                Importez une mammographie<br>pour démarrer l'analyse
+            <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+                       color:var(--slate-light); text-transform:uppercase; letter-spacing:0.12em;
+                       margin:0 0 0.8rem;">
+                Paramètres du modèle
+            </p>
+            <div style="display:flex; flex-direction:column; gap:5px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:0.77rem; color:var(--slate); font-family:'IBM Plex Sans',sans-serif;">Architecture</span>
+                    <span style="font-size:0.77rem; font-family:'IBM Plex Mono',monospace; color:var(--navy); font-weight:500;">MobileNetV2</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:0.77rem; color:var(--slate); font-family:'IBM Plex Sans',sans-serif;">Type</span>
+                    <span style="font-size:0.77rem; font-family:'IBM Plex Mono',monospace; color:var(--navy); font-weight:500;">Classification binaire</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:0.77rem; color:var(--slate); font-family:'IBM Plex Sans',sans-serif;">Seuil de décision</span>
+                    <span style="font-size:0.77rem; font-family:'IBM Plex Mono',monospace; color:var(--navy); font-weight:500;">0.50</span>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # ── Launch button ──
+        launch = st.button("Lancer l'analyse clinique IA")
+
+    else:
+        # ── Empty state ──
+        st.markdown("""
+        <div style="
+            background:#FFFFFF; border:1.5px dashed var(--border);
+            border-radius:var(--radius-md); padding:3rem 1.5rem;
+            text-align:center; box-shadow:none;
+        ">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
+                 style="display:block; margin:0 auto 1rem; opacity:0.25;">
+                <rect x="3" y="3" width="18" height="18" rx="3" stroke="#0B1929" stroke-width="1.5"/>
+                <circle cx="8.5" cy="8.5" r="1.5" stroke="#0B1929" stroke-width="1.5"/>
+                <path d="m21 15-5-5L5 21" stroke="#0B1929" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.85rem;
+                       color:var(--slate-light); font-weight:300; margin:0; line-height:1.7;">
+                Importez une image mammographique<br>pour accéder à l'analyse clinique
             </p>
         </div>
         """, unsafe_allow_html=True)
         launch = False
 
 
-# ======================================================
-# RÉSULTATS D'ANALYSE
-# ======================================================
+# ══════════════════════════════════════════════════════════════════════════════
+#  RESULTS
+# ══════════════════════════════════════════════════════════════════════════════
 if uploaded_file is not None and launch:
-    st.divider()
+
+    st.markdown("<hr>", unsafe_allow_html=True)
+
     st.markdown("""
-    <p style="font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:1rem;">
-        Résultats de l'analyse clinique
+    <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.68rem; font-weight:600;
+               color:var(--slate-light); text-transform:uppercase; letter-spacing:0.14em;
+               margin:0 0 1.2rem;">
+        Rapport d'analyse clinique automatisée
     </p>
     """, unsafe_allow_html=True)
 
-    with st.spinner("Analyse IA en cours — Traitement du modèle MobileNet…"):
+    with st.spinner("Inférence en cours — Modèle MobileNetV2…"):
         prediction = model.predict(img_array)[0][0]
 
     confidence = round(float(prediction) * 100 if prediction > 0.5 else (1 - float(prediction)) * 100, 1)
 
-    if prediction > 0.5:
-        # ── RÉSULTAT SUSPECT ──
-        st.markdown(f"""
-        <div style="
-            background:linear-gradient(135deg, #fff1f2, #fef2f2);
-            border:1px solid #fecdd3;
-            border-left:5px solid #ef4444;
-            border-radius:16px; padding:1.6rem;
-            margin-bottom:1rem;
-        ">
-            <div style="display:flex; align-items:center; gap:12px; margin-bottom:1rem;">
-                <span style="font-size:1.6rem;">⚠️</span>
-                <div>
-                    <p style="font-size:1.05rem; font-weight:700; color:#991b1b; margin:0;">
-                        Suspicion de lésion mammaire suspecte
-                    </p>
-                    <p style="font-size:0.8rem; color:#b91c1c; margin:3px 0 0; font-weight:300;">
-                        Score de confiance du modèle : <strong>{confidence}%</strong>
+    res_col, meta_col = st.columns([3, 2], gap="large")
+
+    with res_col:
+        if prediction > 0.5:
+            # ── POSITIVE (suspicious) ──
+            st.markdown(f"""
+            <div style="
+                background:var(--danger-bg); border:1px solid #F0B8C4;
+                border-left:4px solid var(--rose);
+                border-radius:var(--radius-md); padding:1.6rem;
+                margin-bottom:1rem;
+            ">
+                <!-- Header -->
+                <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:1.2rem;">
+                    <div style="
+                        width:38px; height:38px; border-radius:10px; flex-shrink:0;
+                        background:var(--rose-light); display:flex; align-items:center; justify-content:center;
+                    ">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                                  stroke="#C8385A" stroke-width="1.5" stroke-linecap="round"/>
+                            <line x1="12" y1="9" x2="12" y2="13" stroke="#C8385A" stroke-width="1.5" stroke-linecap="round"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17" stroke="#C8385A" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p style="font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:600;
+                                   color:#7A1530; margin:0 0 4px; line-height:1.2;">
+                            Suspicion de lésion mammaire
+                        </p>
+                        <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.77rem;
+                                   color:#A03050; margin:0; font-weight:300;">
+                            Anomalie détectée · Score de confiance&nbsp;
+                            <span style="font-family:'IBM Plex Mono',monospace; font-weight:500;">{confidence}%</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Interpretation -->
+                <div style="
+                    background:rgba(255,255,255,0.65); border:1px solid #F0C0CC;
+                    border-radius:9px; padding:1rem 1.2rem; margin-bottom:1.2rem;
+                ">
+                    <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+                               color:#A03050; text-transform:uppercase; letter-spacing:0.1em;
+                               margin:0 0 0.5rem;">Interprétation clinique automatisée</p>
+                    <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.84rem;
+                               color:#7A1530; margin:0; line-height:1.7; font-weight:300;">
+                        Le modèle identifie des anomalies radiologiques compatibles avec une
+                        <strong style="font-weight:600;">lésion mammaire potentiellement maligne</strong>.
+                        Une corrélation avec l'imagerie complémentaire et l'examen clinique est indispensable.
                     </p>
                 </div>
-            </div>
-            <div style="
-                background:white; border-radius:10px; padding:1rem 1.2rem;
-                border:1px solid #fecdd3; margin-bottom:1rem;
-            ">
-                <p style="font-size:0.82rem; color:#7f1d1d; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; margin:0 0 0.7rem;">
-                    Interprétation clinique
-                </p>
-                <p style="font-size:0.88rem; color:#991b1b; margin:0; line-height:1.7;">
-                    Le modèle détecte des anomalies compatibles avec une <strong>lésion potentiellement maligne</strong>.
-                    Une corrélation radiologique et une validation par le spécialiste sont indispensables.
-                </p>
-            </div>
-            <p style="font-size:0.82rem; font-weight:600; color:#7f1d1d; text-transform:uppercase; letter-spacing:0.07em; margin-bottom:0.6rem;">
-                Recommandations prioritaires
-            </p>
-        """, unsafe_allow_html=True)
 
-        recs = [
-            "Corrélation radiologique immédiate",
-            "Avis spécialisé en sénologie / oncologie",
-            "Biopsie ciblée si cliniquement indiquée",
-            "Échographie ou IRM mammaire complémentaire",
-            "Validation obligatoire par radiologue senior",
-        ]
-        for r in recs:
-            st.markdown(f"""
-            <div style="display:flex; align-items:center; gap:8px; padding:5px 0;">
-                <span style="color:#ef4444; font-weight:700;">→</span>
-                <span style="font-size:0.86rem; color:#991b1b;">{r}</span>
+                <!-- Recommendations -->
+                <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+                           color:#A03050; text-transform:uppercase; letter-spacing:0.1em;
+                           margin:0 0 0.7rem;">Conduite à tenir recommandée</p>
+            """, unsafe_allow_html=True)
+
+            recs = [
+                ("01", "Corrélation radiologique immédiate avec le radiologue référent"),
+                ("02", "Avis spécialisé en sénologie et oncologie mammaire"),
+                ("03", "Biopsie percutanée guidée si cliniquement indiquée"),
+                ("04", "IRM mammaire ou échographie complémentaire"),
+                ("05", "Validation obligatoire par un radiologue senior"),
+            ]
+            for num, r in recs:
+                st.markdown(f"""
+                <div style="display:flex; align-items:flex-start; gap:10px;
+                             padding:6px 0; border-bottom:1px solid rgba(200,56,90,0.1);">
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:0.65rem;
+                                  color:#D4708A; flex-shrink:0; margin-top:2px;">{num}</span>
+                    <span style="font-family:'IBM Plex Sans',sans-serif; font-size:0.82rem;
+                                  color:#7A1530; line-height:1.5;">{r}</span>
+                </div>
+                """, unsafe_allow_html=True)
+
+            st.markdown("</div>", unsafe_allow_html=True)
+
+            # Grad-CAM placeholder
+            st.markdown("""
+            <div style="
+                background:#FFFFFF; border:1px solid var(--border);
+                border-radius:var(--radius-md); padding:1.2rem 1.4rem;
+                box-shadow:var(--shadow-sm);
+            ">
+                <div style="display:flex; align-items:center; gap:9px; margin-bottom:0.5rem;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="3" stroke="#C8385A" stroke-width="1.5"/>
+                        <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="#C8385A" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+                               color:var(--slate); text-transform:uppercase; letter-spacing:0.12em; margin:0;">
+                        Explicabilité IA · Grad-CAM
+                    </p>
+                </div>
+                <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.81rem;
+                           color:var(--slate); margin:0; font-weight:300; line-height:1.6;">
+                    La carte de chaleur des régions d'intérêt diagnostique sera affichée ici
+                    pour localiser précisément les zones suspectes.
+                </p>
             </div>
             """, unsafe_allow_html=True)
 
-        st.markdown("</div>", unsafe_allow_html=True)
+        else:
+            # ── NEGATIVE ──
+            st.markdown(f"""
+            <div style="
+                background:var(--success-bg); border:1px solid #A7D9C5;
+                border-left:4px solid var(--success);
+                border-radius:var(--radius-md); padding:1.6rem;
+                margin-bottom:1rem;
+            ">
+                <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:1.2rem;">
+                    <div style="
+                        width:38px; height:38px; border-radius:10px; flex-shrink:0;
+                        background:#D4F0E4; display:flex; align-items:center; justify-content:center;
+                    ">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                            <path d="M20 6L9 17l-5-5" stroke="#1A7F5A" stroke-width="2"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p style="font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:600;
+                                   color:#0F4A34; margin:0 0 4px;">
+                            Aucun signe radiologique suspect
+                        </p>
+                        <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.77rem;
+                                   color:#1A7F5A; margin:0; font-weight:300;">
+                            Résultat négatif · Score de confiance&nbsp;
+                            <span style="font-family:'IBM Plex Mono',monospace; font-weight:500;">{confidence}%</span>
+                        </p>
+                    </div>
+                </div>
+                <div style="
+                    background:rgba(255,255,255,0.65); border:1px solid #B0D9C8;
+                    border-radius:9px; padding:1rem 1.2rem; margin-bottom:1.2rem;
+                ">
+                    <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+                               color:#1A7F5A; text-transform:uppercase; letter-spacing:0.1em; margin:0 0 0.5rem;">
+                        Interprétation clinique automatisée
+                    </p>
+                    <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.84rem;
+                               color:#0F4A34; margin:0; line-height:1.7; font-weight:300;">
+                        Aucune anomalie mammaire significative n'a été identifiée sur ce cliché.
+                        Ce résultat doit être intégré dans le contexte clinique global du patient.
+                    </p>
+                </div>
+                <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+                           color:#1A7F5A; text-transform:uppercase; letter-spacing:0.1em; margin:0 0 0.7rem;">
+                    Conduite à tenir recommandée
+                </p>
+            """, unsafe_allow_html=True)
 
-        # Explicabilité IA
-        st.markdown("""
+            recs = [
+                ("01", "Maintenir le protocole de surveillance mammographique périodique"),
+                ("02", "Corrélation avec le contexte clinique et les antécédents"),
+                ("03", "Réévaluation si apparition de symptomatologie clinique"),
+                ("04", "Intégrer le résultat au dossier médical patient"),
+            ]
+            for num, r in recs:
+                st.markdown(f"""
+                <div style="display:flex; align-items:flex-start; gap:10px;
+                             padding:6px 0; border-bottom:1px solid rgba(26,127,90,0.12);">
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:0.65rem;
+                                  color:#5AB090; flex-shrink:0; margin-top:2px;">{num}</span>
+                    <span style="font-family:'IBM Plex Sans',sans-serif; font-size:0.82rem;
+                                  color:#0F4A34; line-height:1.5;">{r}</span>
+                </div>
+                """, unsafe_allow_html=True)
+
+            st.markdown("</div>", unsafe_allow_html=True)
+
+    with meta_col:
+        # ── Confidence score card ──
+        pct = confidence
+        bar_color = "#C8385A" if prediction > 0.5 else "#1A7F5A"
+
+        st.markdown(f"""
         <div style="
-            background:white; border-radius:14px;
-            border:1px solid #e2e8f0; padding:1.2rem;
-            box-shadow:0 2px 12px rgba(15,31,61,0.04);
+            background:#FFFFFF; border:1px solid var(--border);
+            border-radius:var(--radius-md); padding:1.4rem;
+            box-shadow:var(--shadow-sm); margin-bottom:1rem;
         ">
-            <p style="font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem;">
-                🧬 Explicabilité IA — Grad-CAM
+            <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+                       color:var(--slate-light); text-transform:uppercase; letter-spacing:0.12em;
+                       margin:0 0 1rem; border-bottom:1px solid var(--ivory-dark); padding-bottom:0.7rem;">
+                Score de confiance
             </p>
-            <p style="font-size:0.84rem; color:#64748b; margin:0;">
-                La carte de chaleur des régions d'intérêt diagnostique (Grad-CAM) sera affichée ici pour localiser les zones suspectes.
-            </p>
+            <div style="text-align:center; margin:0.5rem 0 1.2rem;">
+                <span style="font-family:'Cormorant Garamond',serif; font-size:3.2rem;
+                              font-weight:600; color:{bar_color}; line-height:1;">
+                    {pct}
+                </span>
+                <span style="font-family:'IBM Plex Sans',sans-serif; font-size:1.2rem;
+                              color:{bar_color}; font-weight:300;">%</span>
+            </div>
+            <!-- Progress bar -->
+            <div style="background:var(--ivory-dark); border-radius:4px; height:6px; overflow:hidden;">
+                <div style="background:{bar_color}; width:{pct}%; height:100%;
+                             border-radius:4px; transition:width 0.5s ease;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:6px;">
+                <span style="font-size:0.65rem; color:var(--slate-light); font-family:'IBM Plex Mono',monospace;">0%</span>
+                <span style="font-size:0.65rem; color:var(--slate-light); font-family:'IBM Plex Mono',monospace;">100%</span>
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
-    else:
-        # ── RÉSULTAT NÉGATIF ──
+        # ── Analysis metadata ──
+        now = datetime.now()
         st.markdown(f"""
         <div style="
-            background:linear-gradient(135deg, #f0fdf4, #ecfdf5);
-            border:1px solid #bbf7d0;
-            border-left:5px solid #10b981;
-            border-radius:16px; padding:1.6rem;
+            background:#FFFFFF; border:1px solid var(--border);
+            border-radius:var(--radius-md); padding:1.3rem 1.4rem;
+            box-shadow:var(--shadow-sm); margin-bottom:1rem;
         ">
-            <div style="display:flex; align-items:center; gap:12px; margin-bottom:1rem;">
-                <span style="font-size:1.6rem;">✅</span>
-                <div>
-                    <p style="font-size:1.05rem; font-weight:700; color:#065f46; margin:0;">
-                        Aucun signe radiologique suspect détecté
-                    </p>
-                    <p style="font-size:0.8rem; color:#047857; margin:3px 0 0; font-weight:300;">
-                        Score de confiance du modèle : <strong>{confidence}%</strong>
-                    </p>
-                </div>
-            </div>
-            <div style="
-                background:white; border-radius:10px; padding:1rem 1.2rem;
-                border:1px solid #bbf7d0; margin-bottom:1rem;
-            ">
-                <p style="font-size:0.82rem; color:#065f46; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; margin:0 0 0.7rem;">
-                    Interprétation clinique
-                </p>
-                <p style="font-size:0.88rem; color:#047857; margin:0; line-height:1.7;">
-                    Aucune anomalie mammaire significative n'a été identifiée par le modèle sur cette image.
-                    Maintenir le suivi habituel et corréler avec le contexte clinique du patient.
-                </p>
-            </div>
-            <p style="font-size:0.82rem; font-weight:600; color:#065f46; text-transform:uppercase; letter-spacing:0.07em; margin-bottom:0.6rem;">
-                Recommandations
+            <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.67rem; font-weight:600;
+                       color:var(--slate-light); text-transform:uppercase; letter-spacing:0.12em;
+                       margin:0 0 0.9rem; border-bottom:1px solid var(--ivory-dark); padding-bottom:0.7rem;">
+                Métadonnées de l'analyse
             </p>
         """, unsafe_allow_html=True)
 
-        recs = [
-            "Maintenir le protocole de surveillance périodique",
-            "Corrélation avec le contexte clinique du patient",
-            "Réévaluation si symptomatologie clinique persistante",
-            "Résultat à intégrer dans le dossier médical",
+        meta_rows = [
+            ("Analyste", current_user['full_name']),
+            ("Rôle", current_user['role']),
+            ("Date", now.strftime('%d %b %Y')),
+            ("Heure", now.strftime('%H:%M:%S')),
+            ("Modèle", "MobileNetV2"),
+            ("Version", "v2.0.0"),
         ]
-        for r in recs:
+        for k, v in meta_rows:
             st.markdown(f"""
-            <div style="display:flex; align-items:center; gap:8px; padding:5px 0;">
-                <span style="color:#10b981; font-weight:700;">→</span>
-                <span style="font-size:0.86rem; color:#047857;">{r}</span>
+            <div style="display:flex; justify-content:space-between; align-items:center;
+                         padding:5px 0; border-bottom:1px solid #F4F1EC;">
+                <span style="font-family:'IBM Plex Sans',sans-serif; font-size:0.74rem;
+                              color:var(--slate);">{k}</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem;
+                              color:var(--navy); font-weight:500;">{v}</span>
             </div>
             """, unsafe_allow_html=True)
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # AVERTISSEMENT LÉGAL
+    # ── Legal disclaimer ──
     st.markdown("""
     <div style="
-        background:#f8fafc; border:1px solid #e2e8f0;
-        border-radius:10px; padding:0.9rem 1.2rem;
-        margin-top:1rem;
+        display:flex; align-items:flex-start; gap:12px;
+        background:var(--ivory); border:1px solid var(--border);
+        border-radius:var(--radius-sm); padding:12px 16px; margin-top:0.5rem;
     ">
-        <p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.6;">
-            <strong style="color:#64748b;">⚖️ Avertissement clinique</strong> —
-            Cette analyse constitue un support décisionnel automatisé et ne doit jamais se substituer
-            au jugement clinique du radiologue ou de l'oncologue.
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0; margin-top:1px; opacity:0.4;">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#0B1929" stroke-width="1.5"/>
+        </svg>
+        <p style="font-family:'IBM Plex Sans',sans-serif; font-size:0.76rem;
+                   color:var(--slate); margin:0; font-weight:300; line-height:1.6;">
+            <strong style="font-weight:600; color:var(--navy);">Avertissement médico-légal</strong> —
+            Ce rapport automatisé constitue un outil de support décisionnel.
+            Il ne se substitue en aucun cas au diagnostic clinique établi par un médecin qualifié
+            et ne peut être utilisé comme seul élément de décision thérapeutique.
         </p>
     </div>
     """, unsafe_allow_html=True)
 
 
-# ======================================================
-# FOOTER
-# ======================================================
-st.markdown("---")
-st.markdown("""
+# ══════════════════════════════════════════════════════════════════════════════
+#  FOOTER
+# ══════════════════════════════════════════════════════════════════════════════
+st.markdown("<hr>", unsafe_allow_html=True)
+st.markdown(f"""
 <div style="
     display:flex; justify-content:space-between; align-items:center;
-    padding:0.5rem 0; flex-wrap:wrap; gap:0.5rem;
+    padding:0.4rem 0; flex-wrap:wrap; gap:0.5rem;
 ">
-    <span style="font-size:0.78rem; color:#94a3b8;">
-        Farafin AI for Health &nbsp;·&nbsp; Plateforme clinique v2.0 &nbsp;·&nbsp; 2026
+    <span style="font-family:'IBM Plex Sans',sans-serif; font-size:0.72rem; color:var(--slate-light);">
+        Farafin AI for Health &nbsp;·&nbsp; Burkina Faso &nbsp;·&nbsp; Plateforme clinique v2.0.0 &nbsp;·&nbsp; 2026
     </span>
-    <span style="font-size:0.78rem; color:#cbd5e1;">
-        Modèle : MobileNetV2 &nbsp;·&nbsp; Confidentiel — Usage médical exclusif
+    <span style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--border);">
+        MobileNetV2 &nbsp;·&nbsp; Usage médical exclusif &nbsp;·&nbsp; Confidentiel
     </span>
 </div>
 """, unsafe_allow_html=True)
