@@ -509,7 +509,8 @@ col_title, col_badge = st.columns([3, 1])
 with col_title:
     st.markdown("""
     <div style="margin-bottom:0.2rem;">
-        
+        <p style="font-size:0.75rem; color:#ec4899; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:4px;">
+        </p>
         <h1 style="margin:0;">Bienvenue sur la plateforme d'aide au diagnostic du cancer du sein Assistée par IA </h1>
         <p style="color:#64748b; font-size:0.93rem; margin-top:6px; font-weight:300;">
         </p>
