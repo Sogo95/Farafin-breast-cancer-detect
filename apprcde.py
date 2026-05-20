@@ -420,46 +420,137 @@ def load_my_model():
 
 model = load_my_model()
 
+# ======================================================
+# SIDEBAR PROFESSIONNELLE (CUSTOM CLEAN)
+# ======================================================
 
-# ======================================================
-# SIDEBAR PROFESSIONNELLE
-# ======================================================
+st.markdown("""
+<style>
+/* nettoyage sidebar Streamlit natif */
+[data-testid="stSidebar"] {
+    padding-top: 1.2rem;
+}
+
+/* bloc principal sidebar */
+.sidebar-card {
+    padding: 0.5rem 0 1rem;
+}
+
+/* avatar */
+.sidebar-avatar {
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#ec4899,#a855f7);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:0.85rem;
+    color:white;
+    flex-shrink:0;
+}
+
+/* user info */
+.sidebar-name {
+    color:white;
+    font-weight:600;
+    font-size:0.9rem;
+    line-height:1.2;
+}
+
+.sidebar-role {
+    color:#94b3c8;
+    font-size:0.75rem;
+    margin-top:2px;
+}
+
+/* department badge */
+.sidebar-dept {
+    background:rgba(236,72,153,0.12);
+    border:1px solid rgba(236,72,153,0.25);
+    border-radius:8px;
+    padding:6px 10px;
+    font-size:0.75rem;
+    color:#f9a8d4;
+    letter-spacing:0.03em;
+}
+
+/* navigation title */
+.sidebar-nav-title {
+    font-size:0.7rem;
+    color:#4a6a8a;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    margin-bottom:0.8rem;
+}
+
+/* nav item */
+.nav-item {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 12px;
+    border-radius:9px;
+    margin-bottom:4px;
+}
+
+/* footer */
+.sidebar-footer {
+    margin-top:2rem;
+    padding:12px;
+    background:rgba(255,255,255,0.04);
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.06);
+    text-align:center;
+    font-size:0.7rem;
+    color:#4a6a8a;
+    letter-spacing:0.04em;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 with st.sidebar:
-    st.markdown("""
-    <div style="padding: 0.5rem 0 1rem;">
+
+    # ================= USER CARD =================
+    st.markdown(f"""
+    <div class="sidebar-card">
+
         <div style="display:flex; align-items:center; gap:10px; margin-bottom:1rem;">
-            <div style="
-                width:42px; height:42px; border-radius:12px;
-                background:linear-gradient(135deg,#ec4899,#a855f7);
-                display:flex; align-items:center; justify-content:center;
-                font-weight:700; font-size:0.85rem; color:white; flex-shrink:0;
-            ">
-    """ + current_user['initials'] + """
+
+            <div class="sidebar-avatar">
+                {current_user['initials']}
             </div>
+
             <div>
-                <div style="color:white !important; font-weight:600; font-size:0.9rem; line-height:1.2;">""" + current_user['full_name'] + """</div>
-                <div style="color:#94b3c8; font-size:0.75rem; margin-top:2px;">""" + current_user['role'] + """</div>
+                <div class="sidebar-name">
+                    {current_user['full_name']}
+                </div>
+                <div class="sidebar-role">
+                    {current_user['role']}
+                </div>
             </div>
+
         </div>
-        <div style="
-            background:rgba(236,72,153,0.12);
-            border:1px solid rgba(236,72,153,0.25);
-            border-radius:8px; padding:6px 10px;
-            font-size:0.75rem; color:#f9a8d4; letter-spacing:0.03em;
-        ">
-            🏥 """ + current_user['department'] + """
+
+        <div class="sidebar-dept">
+            🏥 {current_user['department']}
         </div>
+
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("---")
 
+    # ================= NAV TITLE =================
     st.markdown("""
-    <div style="margin-bottom:1rem;">
-        <p style="font-size:0.7rem; color:#4a6a8a; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.8rem;">Navigation</p>
+    <div class="sidebar-nav-title">
+        Navigation
     </div>
     """, unsafe_allow_html=True)
 
+    # ================= NAV ITEMS =================
     nav_items = [
         ("🩻", "Analyse mammographique", True),
         ("🔬", "Détection des lésions", False),
@@ -467,40 +558,43 @@ with st.sidebar:
         ("📊", "Audit clinique", False),
         ("📁", "Historique patients", False),
     ]
+
     for icon, label, active in nav_items:
+
         bg = "rgba(236,72,153,0.15)" if active else "transparent"
         border = "rgba(236,72,153,0.4)" if active else "transparent"
         color = "#f9a8d4" if active else "#94b3c8"
+        weight = "600" if active else "400"
+
         st.markdown(f"""
-        <div style="
-            display:flex; align-items:center; gap:10px;
-            padding:9px 12px; border-radius:9px;
-            background:{bg}; border:1px solid {border};
-            margin-bottom:4px; cursor:pointer;
-            transition:all 0.2s;
-        ">
+        <div class="nav-item"
+             style="
+                background:{bg};
+                border:1px solid {border};
+                cursor:pointer;
+             ">
             <span style="font-size:1rem;">{icon}</span>
-            <span style="font-size:0.87rem; color:{color}; font-weight:{'600' if active else '400'};">{label}</span>
+            <span style="font-size:0.87rem; color:{color}; font-weight:{weight};">
+                {label}
+            </span>
         </div>
         """, unsafe_allow_html=True)
 
     st.markdown("---")
 
+    # ================= LOGOUT =================
     if st.button("⎋  Déconnexion"):
         st.session_state.authenticated = False
         st.session_state.username = ""
         st.rerun()
 
+    # ================= FOOTER =================
     st.markdown("""
-    <div style="margin-top:2rem; padding:12px; background:rgba(255,255,255,0.04); border-radius:10px; border:1px solid rgba(255,255,255,0.06);">
-        <p style="font-size:0.7rem; color:#4a6a8a; text-align:center; margin:0; letter-spacing:0.04em;">
-            FARAFIN AI FOR HEALTH<br>
-            <span style="color:#2a4a6a;">Version 2.0 · 2026</span>
-        </p>
+    <div class="sidebar-footer">
+        FARAFIN AI FOR HEALTH<br>
+        <span style="color:#2a4a6a;">Version 2.0 · 2026</span>
     </div>
     """, unsafe_allow_html=True)
-
-
 # ======================================================
 # HEADER PRINCIPAL
 # ======================================================
