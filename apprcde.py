@@ -420,82 +420,109 @@ def load_my_model():
 
 model = load_my_model()
 
-
-# ======================================================
-# SIDEBAR PROFESSIONNELLE
-# ======================================================
+# ── SIDEBAR ────────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("""
-    <div style="padding: 0.5rem 0 1rem;">
+    st.markdown(f"""
+    <div style="padding:0.5rem 0 1.2rem;">
         <div style="display:flex; align-items:center; gap:10px; margin-bottom:1rem;">
-            <div style="
-                width:42px; height:42px; border-radius:12px;
-                background:linear-gradient(135deg,#ec4899,#a855f7);
-                display:flex; align-items:center; justify-content:center;
-                font-weight:700; font-size:0.85rem; color:white; flex-shrink:0;
-            ">
-    """ + current_user['initials'] + """
+            <div style="width:42px; height:42px; border-radius:10px; flex-shrink:0;
+                        background:linear-gradient(135deg,#C8385A,#8B1A34);
+                        display:flex; align-items:center; justify-content:center;
+                        font-family:'Inter',sans-serif; font-weight:700;
+                        font-size:0.85rem; color:white;">
+                {current_user['initials']}
             </div>
             <div>
-                <div style="color:white !important; font-weight:600; font-size:0.9rem; line-height:1.2;">""" + current_user['full_name'] + """</div>
-                <div style="color:#94b3c8; font-size:0.75rem; margin-top:2px;">""" + current_user['role'] + """</div>
+                <p style="color:#FFFFFF !important; font-weight:600; font-size:0.88rem;
+                           font-family:'Inter',sans-serif; margin:0 0 2px; line-height:1.2;">
+                    {current_user['full_name']}
+                </p>
+                <p style="color:#6B849A !important; font-size:0.72rem;
+                           font-family:'Inter',sans-serif; margin:0;">
+                    {current_user.get('grade','MD')}
+                </p>
             </div>
         </div>
-        <div style="
-            background:rgba(236,72,153,0.12);
-            border:1px solid rgba(236,72,153,0.25);
-            border-radius:8px; padding:6px 10px;
-            font-size:0.75rem; color:#f9a8d4; letter-spacing:0.03em;
-        ">
-            🏥 """ + current_user['department'] + """
+        <div style="background:rgba(200,56,90,0.12); border:1px solid rgba(200,56,90,0.25);
+                    border-radius:6px; padding:6px 10px; margin-bottom:6px;">
+            <span style="font-size:0.72rem; color:#D4708A !important;
+                          font-family:'Inter',sans-serif; font-weight:500;">
+                {current_user['role']}
+            </span>
         </div>
+        <p style="font-size:0.72rem; color:#3A5570 !important;
+                   font-family:'Inter',sans-serif; margin:4px 0 0; padding-left:2px;">
+            🏥 {current_user['department']}
+        </p>
     </div>
     """, unsafe_allow_html=True)
-
-    st.markdown("---")
-
+ 
+    st.markdown("<hr>", unsafe_allow_html=True)
+ 
     st.markdown("""
-    <div style="margin-bottom:1rem;">
-        <p style="font-size:0.7rem; color:#4a6a8a; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.8rem;">Navigation</p>
-    </div>
+    <p style="font-size:0.65rem; color:#2A4560 !important; font-weight:600;
+               text-transform:uppercase; letter-spacing:0.12em;
+               font-family:'Inter',sans-serif; margin-bottom:0.7rem;">
+        Modules cliniques
+    </p>
     """, unsafe_allow_html=True)
-
-    nav_items = [
-        ("🩻", "Analyse mammographique", True),
-        ("🔬", "Détection des lésions", False),
-        ("📋", "Support décisionnel", False),
-        ("📊", "Audit clinique", False),
-        ("📁", "Historique patients", False),
+ 
+    nav = [
+        ("🩻", "Analyse mammographique",  True),
+        ("🔬", "Détection des lésions",    False),
+        ("📋", "Support décisionnel",      False),
+        ("📊", "Tableau de bord",          False),
+        ("🗂️", "Dossiers patients",        False),
+        ("📈", "Audit & traçabilité",      False),
     ]
-    for icon, label, active in nav_items:
-        bg = "rgba(236,72,153,0.15)" if active else "transparent"
-        border = "rgba(236,72,153,0.4)" if active else "transparent"
-        color = "#f9a8d4" if active else "#94b3c8"
+    for icon, label, active in nav:
+        bg = "rgba(200,56,90,0.14)" if active else "transparent"
+        border = "rgba(200,56,90,0.3)" if active else "transparent"
+        color = "#E8A0B0 !important" if active else "#3A5570 !important"
+        fw = "600" if active else "400"
         st.markdown(f"""
-        <div style="
-            display:flex; align-items:center; gap:10px;
-            padding:9px 12px; border-radius:9px;
-            background:{bg}; border:1px solid {border};
-            margin-bottom:4px; cursor:pointer;
-            transition:all 0.2s;
-        ">
-            <span style="font-size:1rem;">{icon}</span>
-            <span style="font-size:0.87rem; color:{color}; font-weight:{'600' if active else '400'};">{label}</span>
+        <div style="display:flex; align-items:center; gap:9px;
+                     padding:9px 11px; margin-bottom:3px;
+                     background:{bg}; border:1px solid {border}; border-radius:7px;">
+            <span style="font-size:0.9rem;">{icon}</span>
+            <span style="font-size:0.83rem; color:{color}; font-weight:{fw};
+                          font-family:'Inter',sans-serif;">{label}</span>
         </div>
         """, unsafe_allow_html=True)
-
-    st.markdown("---")
-
-    if st.button("⎋  Déconnexion"):
+ 
+    st.markdown("<hr>", unsafe_allow_html=True)
+ 
+    now = datetime.now()
+    st.markdown(f"""
+    <div style="margin-bottom:1rem;">
+        <p style="font-size:0.65rem; color:#2A4560 !important; font-weight:600;
+                   text-transform:uppercase; letter-spacing:0.12em;
+                   font-family:'Inter',sans-serif; margin-bottom:0.6rem;">Session</p>
+        <div style="display:flex; flex-direction:column; gap:5px;">
+            {''.join([f"""
+            <div style="display:flex; justify-content:space-between;">
+                <span style="font-size:0.72rem; color:#2A4560 !important; font-family:'Inter',sans-serif;">{k}</span>
+                <span style="font-size:0.72rem; color:#5A7A9A !important; font-family:'Inter',sans-serif; font-weight:500;">{v}</span>
+            </div>""" for k,v in [("Date", now.strftime('%d %b %Y')),("Heure", now.strftime('%H:%M')),("Modèle","MobileNetV2")]])}
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:0.72rem; color:#2A4560 !important; font-family:'Inter',sans-serif;">Statut</span>
+                <span style="font-size:0.72rem; color:#1A7F5A !important; font-weight:600; font-family:'Inter',sans-serif;">● Actif</span>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+ 
+    if st.button("⎋  Terminer la session"):
         st.session_state.authenticated = False
         st.session_state.username = ""
         st.rerun()
-
+ 
     st.markdown("""
-    <div style="margin-top:2rem; padding:12px; background:rgba(255,255,255,0.04); border-radius:10px; border:1px solid rgba(255,255,255,0.06);">
-        <p style="font-size:0.7rem; color:#4a6a8a; text-align:center; margin:0; letter-spacing:0.04em;">
-            FARAFIN AI FOR HEALTH<br>
-            <span style="color:#2a4a6a;">Version 2.0 · 2026</span>
+    <div style="margin-top:1.5rem; padding-top:1rem;
+                border-top:1px solid rgba(255,255,255,0.05);">
+        <p style="font-family:'Inter',sans-serif; font-size:0.65rem;
+                   color:#1A3050 !important; text-align:center; line-height:1.8; margin:0;">
+            FARAFIN AI FOR HEALTH · v2.0 · 2026
         </p>
     </div>
     """, unsafe_allow_html=True)
