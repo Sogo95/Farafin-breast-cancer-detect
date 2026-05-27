@@ -25,6 +25,7 @@ from docx.shared import Inches, Pt, RGBColor, Cm
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
+import gdown
 
 
 
@@ -366,13 +367,29 @@ if "history" not in st.session_state:
 # ─────────────────────────────────────────────
 # MODÈLE (cache)
 # ─────────────────────────────────────────────
+#@st.cache_resource
+#def load_model():
+    #model = tf.keras.models.load_model("breast_cancer_mobilenet1.keras", compile=False)
+   # return model
+
+#model = load_model()
+
+MODEL_PATH = "breast_cancer_mobilenet1.keras"
+# ← Remplace par ton vrai ID Google Drive
+GDRIVE_FILE_ID = "1DBlje9hyM0nclPzXv8GRMihIU9e3fhaL"
+
 @st.cache_resource
 def load_model():
-    model = tf.keras.models.load_model("breast_cancer_mobilenet1.keras", compile=False)
+    # Télécharger le modèle depuis Google Drive si absent
+    if not os.path.exists(MODEL_PATH):
+        with st.spinner("⏳ Chargement du modèle IA... (première fois uniquement)"):
+            url = f"https://drive.google.com/uc?id={GDRIVE_FILE_ID}"
+            gdown.download(url, MODEL_PATH, quiet=False)
+
+    model = tf.keras.models.load_model(MODEL_PATH, compile=False)
     return model
 
 model = load_model()
-
 IMG_SIZE = 224
 threshold = 0.4
 
